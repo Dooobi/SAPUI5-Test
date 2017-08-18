@@ -1,0 +1,10 @@
+<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:semantic="sap.m.semantic" xmlns:table="sap.ui.table">
+	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}">
+		<semantic:content>
+			<List items="{data>/Items}">
+				<StandardListItem title="{path: 'data>Title', formatter: '.formatter.formatTest'}"/>
+			</List>
+		</semantic:content>
+	</semantic:FullscreenPage>
+</mvc:View>

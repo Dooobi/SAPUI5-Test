@@ -1,0 +1,34 @@
+.gradeIcon {
+    margin-right: 2px;
+}
+
+.grade0Icon {
+    transition: transform 1s, -webkit-transform 1s;
+    -webkit-transition: -webkit-transform 1s;
+}
+
+.grade0Icon:hover {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+}
+
+@font-face {
+    font-family: "approver";
+    src: url("fonts/approver.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "gradefont-bright";
+    src: url("fonts/gradefont-bright.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "gradefont-dark";
+    src: url("fonts/gradefont-dark.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
