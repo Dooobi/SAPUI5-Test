@@ -3,7 +3,7 @@
 	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}">
 		<semantic:content>
 			<List items="{data>/Items}">
-				<StandardListItem title="{path: 'data>Title', formatter: '.formatter.formatTest'}"/>
+				<StandardListItem title="{path: 'data>Title', formatter: 'my.namespace.controller.Main.prototype.formatter.formatTest'}"/>
 			</List>
 		</semantic:content>
 	</semantic:FullscreenPage>

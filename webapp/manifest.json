@@ -85,7 +85,7 @@
 					"pattern": "",
 					"name": "initial",
 					"target": [
-						"test"
+						"main"
 					]
 				}
 			],
