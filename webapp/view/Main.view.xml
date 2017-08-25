@@ -1,10 +1,33 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"
-	xmlns:semantic="sap.m.semantic" xmlns:table="sap.ui.table">
-	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}">
+<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
+	xmlns:table="sap.ui.table">
+	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<semantic:content>
-			<List items="{data>/Items}">
-				<StandardListItem title="{path: 'data>Title', formatter: 'my.namespace.controller.Main.prototype.formatter.formatTest'}"/>
-			</List>
+			<Panel id="panel" height="100%">
+				<ScrollContainer id="scroll" vertical="true" width="100%" height="100%" horizontal="false">
+					<Table id="table" items="{data>/Items}">
+						<headerToolbar>
+							<Toolbar>
+								<ToolbarSpacer/>
+								<Button icon="sap-icon://add" press="onAddPress"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column width="10em">
+								<Text text="Titel"/>
+							</Column>
+							<Column width="10em">
+								<Text text="Beschreibung"/>
+							</Column>
+						</columns>
+						<ColumnListItem>
+							<cells>
+								<Title text="{path: 'data>Title', formatter: 'my.namespace.controller.Main.prototype.formatter.formatTest'}"/>
+								<Text text="haha"/>
+							</cells>
+						</ColumnListItem>
+					</Table>
+				</ScrollContainer>
+			</Panel>
 		</semantic:content>
 	</semantic:FullscreenPage>
 </mvc:View>

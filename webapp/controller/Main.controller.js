@@ -18,11 +18,19 @@ sap.ui.define([
 		 * @public
 		 */
 		onInit: function() {
-		}
+		},
 
 		/* =========================================================== */
 		/* event handlers                                              */
 		/* =========================================================== */
+
+		onAddPress: function(event) {
+			var page = this.getView().byId("scroll");
+			var table = this.getView().byId("table");
+			var items = table.getItems();
+			
+			page.scrollToElement(items[items.length-1], 100);
+		}
 
 		/* =========================================================== */
 		/* internal methods                                            */
