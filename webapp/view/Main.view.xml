@@ -2,8 +2,8 @@
 	xmlns:table="sap.ui.table">
 	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<semantic:content>
-			<Panel id="panel" height="100%">
-				<ScrollContainer id="scroll" vertical="true" width="100%" height="100%" horizontal="false">
+			<ScrollContainer id="scroll" vertical="true" width="100%" height="100%" horizontal="false">
+				<Panel id="panel" height="100%">
 					<Table id="table" items="{data>/Items}">
 						<headerToolbar>
 							<Toolbar>
@@ -26,8 +26,8 @@
 							</cells>
 						</ColumnListItem>
 					</Table>
-				</ScrollContainer>
-			</Panel>
+				</Panel>
+			</ScrollContainer>
 		</semantic:content>
 	</semantic:FullscreenPage>
 </mvc:View>
