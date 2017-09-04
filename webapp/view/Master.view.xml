@@ -1,0 +1,14 @@
+<mvc:View controllerName="my.namespace.controller.Master" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic">
+	<semantic:MasterPage id="master" title="{i18n>masterTitle}">
+		<semantic:subHeader>
+			<Toolbar>
+				<SearchField></SearchField>
+			</Toolbar>
+		</semantic:subHeader>
+		<semantic:content>
+			<List id="masterList" items="{data>/Items}">
+				<StandardListItem icon="sap-icon://action-settings" title="{path: 'data>Title', formatter: 'my.namespace.controller.Master.prototype.formatter.formatTest'}"/>
+			</List>
+		</semantic:content>
+	</semantic:MasterPage>
+</mvc:View>

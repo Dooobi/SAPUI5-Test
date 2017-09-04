@@ -83,9 +83,17 @@
 			"routes": [
 				{
 					"pattern": "",
-					"name": "initial",
+					"name": "fullscreen",
 					"target": [
 						"main"
+					]
+				},
+				{
+					"pattern": "split",
+					"name": "split",
+					"target": [
+						"master",
+						"detail"
 					]
 				}
 			],
@@ -101,6 +109,22 @@
 					"viewId": "test",
 					"viewLevel": 1,
 					"title": "{i18n>mainTitle}"
+				},
+				"master": {
+					"viewName": "Master",
+					"viewId": "master",
+					"viewLevel": 1,
+					"title": "{i18n>masterTitle}",
+					"controlId": "splitApp",
+					"controlAggregation": "masterPages"
+				},
+				"detail": {
+					"viewName": "Detail",
+					"viewId": "detail",
+					"viewLevel": 2,
+					"title": "{i18n>detailTitle}",
+					"controlId": "splitApp",
+					"controlAggregation": "detailPages"
 				}
 			}
 		},

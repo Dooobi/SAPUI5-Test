@@ -9,7 +9,7 @@ sap.ui.define([
 				console.log("'this' is a controller instance");
 			}
 			if (this.setIcon) {
-				this.setIcon("sap://action-settings");
+//				this.setIcon("sap://action-settings");
 				console.log("'this' is a StandardListItem instance");
 			}
 			
