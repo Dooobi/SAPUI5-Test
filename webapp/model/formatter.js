@@ -14,6 +14,20 @@ sap.ui.define([
 			}
 			
 			return title;
+		},
+		
+		formatHeaderSpan: function(year, years) {
+			var i = 0;
+			
+			for (i = 0; i < years.length; i++) {
+				if (years[i].Year === year) {
+					return years[i].Count;
+				}
+			}
+		},
+		
+		formatCellText: function(text) {
+			return text;
 		}
 
 	};

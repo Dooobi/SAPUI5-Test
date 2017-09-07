@@ -27,6 +27,9 @@ sap.ui.define([
 
 			// set the data model
 			this.setModel(models.createDataModel(), "data");
+			
+			// set the table model
+			this.setModel(models.createTableModel(), "table");
 
 			// create the views based on the url/hash
 			this.getRouter().initialize();

@@ -1,33 +1,34 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns:table="sap.ui.table">
+<mvc:View controllerName="my.namespace.controller.Main" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
+	xmlns="sap.ui.table">
 	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<semantic:content>
-			<ScrollContainer id="scroll" vertical="true" width="100%" height="100%" horizontal="false">
-				<Panel id="panel">
-					<Table id="table" items="{data>/Items}">
-						<headerToolbar>
-							<Toolbar>
-								<ToolbarSpacer/>
-								<Button icon="sap-icon://add" press="onAddPress"/>
-							</Toolbar>
-						</headerToolbar>
-						<columns>
-							<Column width="10em">
-								<Text text="Titel"/>
-							</Column>
-							<Column width="10em">
-								<Text text="Beschreibung"/>
-							</Column>
-						</columns>
-						<ColumnListItem>
-							<cells>
-								<Title text="{path: 'data>Title', formatter: 'my.namespace.controller.Main.prototype.formatter.formatTest'}"/>
-								<Text text="haha"/>
-							</cells>
-						</ColumnListItem>
-					</Table>
-				</Panel>
-			</ScrollContainer>
+			<Table id="table" fixedColumnCount="1" columns="{ path: 'table>/Columns', factory: '.columnFactory' }" rows="{data>/Trainees}" noData="No Data" selectionMode="None" class="sapUiSmallMargin">
+				<title>
+					<m:Toolbar>
+						<m:ToolbarSpacer/>
+						<m:Button icon="sap-icon://filter" press="openFilterDialog"/>
+					</m:Toolbar>
+				</title>
+				<columns>
+					<!--<Column label="{table>Year}">-->
+					<!--headerSpan="{ parts: [{path: 'table>Year'}, {path: 'table>/Years'}], formatter: '.formatter.formatHeaderSpan' }"-->
+						<!--<multiLabels>-->
+							<!--<m:Label text="{table>Year}"/>-->
+							<!--<m:Label text="{table>Kw}"/>-->
+						<!--</multiLabels>-->
+					<!--	<template>-->
+					<!--		<m:Text text="abc" />-->
+					<!--	</template>-->
+					<!--</Column>-->
+				</columns>
+				<!--<rows>-->
+				<!--	<Row cells="{data>Reports}">-->
+				<!--		<cells>-->
+				<!--			<m:Text text="{data>ReportId}"/>-->
+				<!--		</cells>-->
+				<!--	</Row>-->
+				<!--</rows>-->
+			</Table>
 		</semantic:content>
 	</semantic:FullscreenPage>
 </mvc:View>
