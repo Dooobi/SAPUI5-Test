@@ -15,39 +15,6 @@ sap.ui.define([
 		createTableModel2: function() {
 			var oModel = new JSONModel();
 			var json = {
-				columns: [{
-					columnId: "col1"
-				}, {
-					columnId: "col2"
-				}, {
-					columnId: "col3"
-				}, {
-					columnId: "col4"
-				}, {
-					columnId: "col5"
-				}],
-				rows: [{
-					col1: "Row 1 col 1",
-					col2: "Row 1 col 2",
-					col3: "Row 1 col 3",
-					col4: "Row 1 col 4",
-					col5: "Row 1 col 5"
-				}, {
-					col1: "Row 2 col 1",
-					col2: "Row 2 col 2",
-					col3: "Row 2 col 3",
-					col4: "Row 2 col 4",
-					col5: "Row 2 col 5"
-				}]
-			};
-			
-			oModel.setData(json);
-			return oModel;
-		},
-
-		createTableModel2: function() {
-			var oModel = new JSONModel();
-			var json = {
 				Columns: [{
 					Label: "Trainee"
 				}, {
@@ -173,30 +140,38 @@ sap.ui.define([
 		
 		createTableModel: function() {
 			var oModel = new JSONModel();
+			var currentDate = new Date();
 			var json = {
 				Columns: [{
 					Label: "Trainee"
 				}, {
 					Year: "2014",
-					Kw: "20"
+					Kw: "20",
+					Date: currentDate
 				}, {
 					Year: "2014",
-					Kw: "21"
+					Kw: "21",
+					Date: currentDate
 				}, {
 					Year: "2014",
-					Kw: "22"
+					Kw: "22",
+					Date: currentDate
 				}, {
 					Year: "2014",
-					Kw: "23"
+					Kw: "23",
+					Date: currentDate
 				}, {
 					Year: "2014",
-					Kw: "30"
+					Kw: "30",
+					Date: currentDate
 				}, {
 					Year: "2014",
-					Kw: "31"
+					Kw: "31",
+					Date: currentDate
 				}, {
 					Year: "2015",
-					Kw: "1"
+					Kw: "1",
+					Date: currentDate
 				}],
 				Years: [{
 					Year: "2014",

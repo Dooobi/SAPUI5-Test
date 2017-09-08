@@ -66,6 +66,10 @@ sap.ui.define([
 				}
 			}
 			return this._sContentDensityClass;
+		},
+		
+		addIcons: function() {
+			IconPool.addIcon("approver", "fis", { fontFamily: "approver", content: "e94f" });
 		}
 
 	});
