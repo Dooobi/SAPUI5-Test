@@ -1,11 +1,26 @@
 sap.ui.define([
 	"my/namespace/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
+	"my/namespace/controller/fragment/SettingsController",
 	"my/namespace/model/formatter",
 	"my/namespace/helper/util",
-	"sap/ui/core/format/DateFormat"
-], function(BaseController, JSONModel, formatter, util, DateFormat) {
+	"sap/ui/core/format/DateFormat",
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator"
+], function(BaseController, JSONModel, SettingsController, formatter, util, DateFormat, Filter, FilterOperator) {
 	"use strict";
+
+	var DUMMY_REPORT_OBJECT = {
+		ReportId: null,
+		DepartmentId: null,
+		HeadId: null,
+		TrainerId: null,
+		StatusId: "NEW",
+		TraineeId: null,
+		Type: null,
+		WeekStart: null,
+		HasNewHistoryEntry: false
+	};
 
 	var c = [];
 	var diff = "";
@@ -13,7 +28,9 @@ sap.ui.define([
 		_timeout = null;
 	var _firstTrainingBegin = null;
 	var _dateFormat = DateFormat.getDateInstance();
-	
+
+	var _settingsController = null;
+
 	return BaseController.extend("my.namespace.controller.Main", {
 
 		formatter: formatter,
@@ -28,6 +45,8 @@ sap.ui.define([
 		 * @public
 		 */
 		onInit: function() {
+			_settingsController = new SettingsController(this, this.getView(), this.getOwnerComponent().getContentDensityClass());
+
 			this.getModel().metadataLoaded().then(this.afterMetadataLoaded.bind(this));
 		},
 
@@ -35,27 +54,12 @@ sap.ui.define([
 		/* event handlers                                              */
 		/* =========================================================== */
 
-		afterMetadataLoaded: function() {
-			var odata = this.getModel();
+		openFilterDialog: function() {
+			_settingsController.getDialog().open();
+		},
 
-			odata.read("/Persons", {
-				urlParameters: {
-					"$expand": "Reports, GenerationDetails"
-				},
-				filters: [
-					new sap.ui.model.Filter("IsTrainee", sap.ui.model.FilterOperator.EQ, true)
-				],
-				success: function(data, result) {
-					// transform data into necessary format
-					// and put it into a json model
-					_firstTrainingBegin = null;
-					var rowModel = this.transformTraineeDataToRowModel(data.results);
-					var columnModel = this.transformRowModelToColumnModel(rowModel.getData());
-					
-					this.setModel(rowModel, "data");
-					this.setModel(columnModel, "table");
-				}.bind(this)
-			});
+		afterMetadataLoaded: function() {
+			this.loadDataFromService();
 		},
 
 		onAddPress: function() {
@@ -71,6 +75,42 @@ sap.ui.define([
 		/* =========================================================== */
 		/* internal methods                                            */
 		/* =========================================================== */
+
+		loadDataFromService: function() {
+			var odata = this.getModel();
+			var aFilters = [];
+
+			aFilters.push(new Filter("IsTrainee", sap.ui.model.FilterOperator.EQ, true));
+
+			var filterSelection = _settingsController.getFilterSelection();
+			if (filterSelection.Generation) {
+				filterSelection.Generation.forEach(function(item) {
+					aFilters.push(new Filter("GenerationId", FilterOperator.EQ, item));
+				});
+			}
+			if (filterSelection.Trainee) {
+				filterSelection.Trainee.forEach(function(item) {
+					aFilters.push(new Filter("PerId", FilterOperator.EQ, item));
+				});
+			}
+
+			odata.read("/Persons", {
+				urlParameters: {
+					"$expand": "Reports, GenerationDetails"
+				},
+				filters: aFilters,
+				success: function(data) {
+					// transform data into necessary format
+					// and put it into a json model
+					_firstTrainingBegin = null;
+					var rowModel = this.transformTraineeDataToRowModel(data.results);
+					var columnModel = this.transformRowModelToColumnModel(rowModel.getData());
+
+					this.setModel(rowModel, "data");
+					this.setModel(columnModel, "table");
+				}.bind(this)
+			});
+		},
 
 		afterAllColumnsAdded: function() {},
 
@@ -88,6 +128,13 @@ sap.ui.define([
 				src: {
 					path: "data>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
 					formatter: formatter.getIconSrc
+				},
+				color: {
+					path: "data>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
+					formatter: formatter.getIconColor
+				},
+				tooltip: {
+					path: "data>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId"
 				}
 			});
 		},
@@ -225,6 +272,45 @@ sap.ui.define([
 			}
 		},
 
+		_hasCalendarWeekRelevantReports: function(week, year, rowData) {
+			var i = 0;
+			var trainees = rowData.Trainees;
+			var filterSelection = _settingsController.getFilterSelection();
+			
+			for (var traineeIndex = 0; traineeIndex < trainees.length; traineeIndex++) {
+				var traineeItem = trainees[traineeIndex];
+				var trainingBeginCalendarWeek = util.getWeekNumber(traineeItem.Trainee.GenerationDetails.TrainingBegin);
+
+				if (trainingBeginCalendarWeek[0] < year || (trainingBeginCalendarWeek[0] === year && trainingBeginCalendarWeek[1] <= week)) {
+					// Trainee had to create a report for this calendar week
+
+					// Create a dummy report if this report doesn't exist
+					if (!traineeItem.Reports[year]) {
+						traineeItem.Reports[year] = {};
+					}
+					if (!traineeItem.Reports[year][week]) {
+						traineeItem.Reports[year][week] = DUMMY_REPORT_OBJECT;
+					}
+
+					var report = traineeItem.Reports[year][week];
+					if (filterSelection.ReportStatus) {
+						for (i = 0; i < filterSelection.ReportStatus.length; i++) {
+							if (filterSelection.ReportStatus[i] === report.StatusId) {
+								return true;
+							}
+						}
+					} else {
+						return true;
+					}
+				} else {
+					// Trainee didn't have to create a report for this calendar week
+					
+				}
+			}
+
+			return false;
+		},
+
 		transformTraineeDataToRowModel: function(data) {
 			var json = {
 				Trainees: []
@@ -237,15 +323,13 @@ sap.ui.define([
 				};
 				var trainee = data[traineeIndex];
 
-				if (_firstTrainingBegin === null 
-					|| trainee.GenerationDetails.TrainingBegin < _firstTrainingBegin)
-				{
+				if (_firstTrainingBegin === null || trainee.GenerationDetails.TrainingBegin < _firstTrainingBegin) {
 					_firstTrainingBegin = trainee.GenerationDetails.TrainingBegin;
 				}
-				
-//				traineeItem.Trainee = "/" + odata.createKey("Persons", trainee);
+
+				//				traineeItem.Trainee = "/" + odata.createKey("Persons", trainee);
 				traineeItem.Trainee = trainee;
-				
+
 				// Loop through reports of trainee from odata response
 				for (var reportIndex = 0; reportIndex < trainee.Reports.results.length; reportIndex++) {
 					var report = trainee.Reports.results[reportIndex];
@@ -255,7 +339,7 @@ sap.ui.define([
 					if (!traineeItem.Reports[weeknumber[0]]) {
 						traineeItem.Reports[weeknumber[0]] = {};
 					}
-//					traineeItem.Reports[weeknumber[0]][weeknumber[1]] = "/" + odata.createKey("Reports", report);
+					//					traineeItem.Reports[weeknumber[0]][weeknumber[1]] = "/" + odata.createKey("Reports", report);
 					traineeItem.Reports[weeknumber[0]][weeknumber[1]] = report;
 				}
 
@@ -273,41 +357,44 @@ sap.ui.define([
 			var trainingBegin = _firstTrainingBegin;
 			var calendarWeek = util.getWeekNumber(trainingBegin);
 			var currentCalendarWeek = util.getWeekNumber(new Date());
-			
+
 			// Fill json
 			// First column is for Trainee name
 			json.Columns.push({
 				Label: "Trainee"
 			});
 			// Following columns are for the calendar weeks from _firstTrainingBegin to current date
-			while(calendarWeek[0] < currentCalendarWeek[0] 
-				|| (calendarWeek[0] === currentCalendarWeek[0] && calendarWeek[1] <= currentCalendarWeek[1])) {
-				
-				json.Columns.push({
-					Year: calendarWeek[0],
-					Kw: calendarWeek[1],
-					Date: trainingBegin
-				});
-				
-				var yearItem = json.Years.find(function(item) {
-					return item.Year === calendarWeek[0];
-				});
-				if (yearItem) {
-					yearItem.Count++;
-				} else {
-					json.Years.push({
+			while (calendarWeek[0] < currentCalendarWeek[0] || (calendarWeek[0] === currentCalendarWeek[0] && calendarWeek[1] <=
+					currentCalendarWeek[1])) {
+
+				// Check if relevant reports for this calendar week exist
+				if (this._hasCalendarWeekRelevantReports(calendarWeek[1], calendarWeek[0], rowData)) {
+					json.Columns.push({
 						Year: calendarWeek[0],
-						Count: 1
+						Kw: calendarWeek[1],
+						Date: trainingBegin
 					});
+
+					var yearItem = json.Years.find(function(item) {
+						return item.Year === calendarWeek[0];
+					});
+					if (yearItem) {
+						yearItem.Count++;
+					} else {
+						json.Years.push({
+							Year: calendarWeek[0],
+							Count: 1
+						});
+					}
 				}
-				
+
 				trainingBegin = util.addDays(trainingBegin, 7);
 				calendarWeek = util.getWeekNumber(trainingBegin);
 			}
-			
+
 			var model = new JSONModel(json);
 			model.setSizeLimit(json.Columns.length + 2);
-			
+
 			return model;
 		},
 
@@ -316,13 +403,13 @@ sap.ui.define([
 				Columns: [],
 				Years: []
 			};
-			
+
 			var years = [];
-			
+
 			var trainees = rowData.Trainees;
 			for (var traineeIndex = 0; traineeIndex < trainees.length; traineeIndex++) {
 				var trainee = trainees[traineeIndex];
-				
+
 				// Loop through the year properties of a Trainee's reports
 				Object.keys(trainee.Reports).forEach(function(keyYear, indexYear) {
 					// key: the name of the object key
@@ -331,7 +418,7 @@ sap.ui.define([
 						years[keyYear] = [];
 					}
 					var year = trainee.Reports[keyYear];
-					
+
 					// Loop through the week properties of a Year which contains the Trainee's reports
 					Object.keys(year).forEach(function(keyWeek, indexWeek) {
 						if (years[keyYear].indexOf(keyWeek) < 0) {
@@ -339,10 +426,10 @@ sap.ui.define([
 							years[keyYear].push(keyWeek);
 						}
 					});
-					
+
 				});
 			}
-			
+
 			// Fill json
 			// First column is for Trainee name
 			json.Columns.push({
@@ -358,15 +445,14 @@ sap.ui.define([
 						Kw: week
 					});
 				});
-				
+
 				// Make year objects with the count of used weeks
 				json.Years.push({
 					Year: keyYear,
 					Count: usedWeeksInYear.length
 				});
 			});
-			console.log(json);
-			
+
 			return new JSONModel(json);
 		}
 	});

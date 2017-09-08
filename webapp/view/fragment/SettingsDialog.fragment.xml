@@ -1,0 +1,38 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog confirm="onConfirm" resetFilters="onResetFilters">
+		<filterItems>
+			<ViewSettingsFilterItem id="status" key="ReportStatus" text="Status" items="{ path: '/ReportStatuss', sorter: { path: 'Text' } }">
+				<items>
+					<ViewSettingsItem key="{ReportStatusId}" text="{=  ${ReportStatusId} === 'NEW' ? ${i18n>reportStatusNotYetAvailable} : ${Text} }" selected="{= ${filter>/defaultStatus}.indexOf(${ReportStatusId}) >= 0 }"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem id="generation" key="Generation" text="Durchgang" items="{/Generations}">
+				<items>
+					<ViewSettingsItem key="{GenerationId}" text="{Text}"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem id="trainee" key="Trainee" text="Auszubildender"
+				items="{ path: '/Persons', filters: [ {path: 'IsTrainee', operator: 'EQ', value1: true} ], sorter: [{ path: 'Firstname' }, { path: 'Lastname' }] }">
+				<items>
+					<ViewSettingsItem key="{PerId}" text="{Firstname} {Lastname}"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem id="approver" key="Approver" text="Genehmiger"
+				items="{path: '/Persons', filters: [{path: 'IsTrainer', operator: 'EQ', value1: true}, {path: 'IsHead', operator: 'EQ', value1: true}], sorter: [{ path: 'Firstname' }, { path: 'Lastname' }] }">
+				<items>
+					<ViewSettingsItem key="{PerId}" text="{Firstname} {Lastname}" selected="{= ${filter>/defaultApprover}.indexOf(${PerId}) >= 0 }"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem id="time" key="Time" text="Zeitraum" multiSelect="false">
+				<items>
+					<ViewSettingsItem key="week1" text="{i18n>filterItemWeek1}"/>
+					<ViewSettingsItem key="month3" text="{i18n>filterItemMonth3}"/>
+					<ViewSettingsItem key="month6" text="{i18n>filterItemMonth6}"/>
+					<ViewSettingsItem key="month12" text="{i18n>filterItemMonth12}"/>
+					<ViewSettingsItem key="trainingYear" text="{i18n>filterItemTrainingYear}"/>
+					<ViewSettingsItem key="none" text="{i18n>filterItemNone}"/>
+				</items>
+			</ViewSettingsFilterItem>
+		</filterItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

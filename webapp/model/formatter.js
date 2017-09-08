@@ -21,11 +21,11 @@ sap.ui.define([
 				properties.color = NEUTRAL_COLOR;
 				break;
 			case Constant.REPORT_STATUS_TRAINER:
-				properties.src = IconPool.getIconURI("approver", "fis");
+				properties.src = IconPool.getIconURI("pending");
 				properties.color = CRITICAL_COLOR;
 				break;
 			case Constant.REPORT_STATUS_HEAD:
-				properties.src = IconPool.getIconURI("approver", "fis");
+				properties.src = IconPool.getIconURI("pending");
 				properties.color = "#FFD700";
 				break;
 			case Constant.REPORT_STATUS_APPROVED:
@@ -60,6 +60,14 @@ sap.ui.define([
 
 		getIconSrc: function(statusId) {
 			return _getIconProperties(statusId).src;
+		},
+		
+		getIconColor: function(statusId) {
+			return _getIconProperties(statusId).color;
+		},
+
+		getIconTooltip: function() {
+			
 		},
 
 		formatHeaderSpan: function(year, years) {
