@@ -1,10 +1,15 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns:m="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns="sap.ui.table">
+<mvc:View controllerName="my.namespace.controller.Main" xmlns:m="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
+	xmlns="sap.ui.table" xmlns:custom="my.namespace.customcontrol">
 	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<semantic:content>
 			<Table id="table" visibleRowCount="{= ${data>/Trainees}.length }" visibleRowCountMode="Fixed" fixedColumnCount="1" columns="{ path: 'table>/Columns', factory: '.columnFactory' }" rows="{data>/Trainees}" noData="No Data" selectionMode="None" class="sapUiSmallMargin">
 				<title>
 					<m:Toolbar>
+						<core:Icon id="myIcon" src="sap-icon://action-settings">
+							<core:tooltip>
+								<custom:CustomTooltip/>
+							</core:tooltip>
+						</core:Icon>
 						<m:ToolbarSpacer/>
 						<m:Button icon="sap-icon://filter" press="openFilterDialog"/>
 					</m:Toolbar>

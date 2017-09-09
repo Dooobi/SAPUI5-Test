@@ -4,10 +4,11 @@ sap.ui.define([
 	"my/namespace/controller/fragment/SettingsController",
 	"my/namespace/model/formatter",
 	"my/namespace/helper/util",
+	"my/namespace/customcontrol/CustomTooltip",
 	"sap/ui/core/format/DateFormat",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator"
-], function(BaseController, JSONModel, SettingsController, formatter, util, DateFormat, Filter, FilterOperator) {
+], function(BaseController, JSONModel, SettingsController, formatter, util, CustomTooltip, DateFormat, Filter, FilterOperator) {
 	"use strict";
 
 	var DUMMY_REPORT_OBJECT = {
@@ -48,6 +49,10 @@ sap.ui.define([
 			_settingsController = new SettingsController(this, this.getView(), this.getOwnerComponent().getContentDensityClass());
 
 			this.getModel().metadataLoaded().then(this.afterMetadataLoaded.bind(this));
+
+//			var customTooltip = new CustomTooltip();
+//			customTooltip.setView(this.getView());
+//			this.getView().byId("myIcon").setTooltip(customTooltip)
 		},
 
 		/* =========================================================== */
@@ -276,7 +281,7 @@ sap.ui.define([
 			var i = 0;
 			var trainees = rowData.Trainees;
 			var filterSelection = _settingsController.getFilterSelection();
-			
+
 			for (var traineeIndex = 0; traineeIndex < trainees.length; traineeIndex++) {
 				var traineeItem = trainees[traineeIndex];
 				var trainingBeginCalendarWeek = util.getWeekNumber(traineeItem.Trainee.GenerationDetails.TrainingBegin);
@@ -304,7 +309,7 @@ sap.ui.define([
 					}
 				} else {
 					// Trainee didn't have to create a report for this calendar week
-					
+
 				}
 			}
 
