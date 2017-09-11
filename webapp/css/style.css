@@ -1,3 +1,9 @@
+.borders {
+	margin: 0 0 0 0;
+	border-style: solid;
+	border-width: 2px;
+}
+
 @font-face {
     font-family: "approver";
     src: url("fonts/approver.ttf") format("truetype");
