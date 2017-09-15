@@ -26,10 +26,10 @@ sap.ui.define([
 			this.setModel(models.createDeviceModel(), "device");
 
 			// set the data model
-			this.setModel(models.createDataModel(), "data");
+			this.setModel(models.createRowModel(), "rowModel");
 			
 			// set the table model
-			this.setModel(models.createTableModel(), "table");
+			this.setModel(models.createColumnModel(), "columnModel");
 
 			// create the views based on the url/hash
 			this.getRouter().initialize();

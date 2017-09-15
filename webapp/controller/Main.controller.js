@@ -50,9 +50,9 @@ sap.ui.define([
 
 			this.getModel().metadataLoaded().then(this.afterMetadataLoaded.bind(this));
 
-//			var customTooltip = new CustomTooltip();
-//			customTooltip.setView(this.getView());
-//			this.getView().byId("myIcon").setTooltip(customTooltip)
+			//			var customTooltip = new CustomTooltip();
+			//			customTooltip.setView(this.getView());
+			//			this.getView().byId("myIcon").setTooltip(customTooltip)
 		},
 
 		/* =========================================================== */
@@ -111,8 +111,8 @@ sap.ui.define([
 					var rowModel = this.transformTraineeDataToRowModel(data.results);
 					var columnModel = this.transformRowModelToColumnModel(rowModel.getData());
 
-					this.setModel(rowModel, "data");
-					this.setModel(columnModel, "table");
+					this.setModel(rowModel, "rowModel");
+					this.setModel(columnModel, "columnModel");
 				}.bind(this)
 			});
 		},
@@ -123,7 +123,7 @@ sap.ui.define([
 			if (index === 0) {
 				return new sap.m.Text({
 					text: {
-						path: "data>Trainee/Firstname",
+						path: "rowModel>Trainee/Firstname",
 						formatter: formatter.formatCellText
 					}
 				});
@@ -131,15 +131,15 @@ sap.ui.define([
 
 			return new sap.ui.core.Icon({
 				src: {
-					path: "data>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
+					path: "rowModel>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
 					formatter: formatter.getIconSrc
 				},
 				color: {
-					path: "data>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
+					path: "rowModel>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
 					formatter: formatter.getIconColor
 				},
 				tooltip: {
-					path: "data>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId"
+					path: "rowModel>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId"
 				}
 			});
 		},
@@ -161,8 +161,8 @@ sap.ui.define([
 				return this.firstColumnFactory(id, context);
 			}
 
-			var columnsData = this.getModel("table").getProperty("/Columns");
-			var yearsData = this.getModel("table").getProperty("/Years");
+			var columnsData = this.getModel("columnModel").getProperty("/Columns");
+			var yearsData = this.getModel("columnModel").getProperty("/Years");
 			var oContext = context.getObject();
 			var headerSpan = 1;
 
@@ -281,12 +281,19 @@ sap.ui.define([
 			var i = 0;
 			var trainees = rowData.Trainees;
 			var filterSelection = _settingsController.getFilterSelection();
+			var filteredStartDate = _settingsController.getFilteredStartDate();
+			var isRelevant = false;
+
+			var filteredStartCalendarWeek = util.getWeekNumber(filteredStartDate);
+			if (year < filteredStartCalendarWeek[0] || year === filteredStartCalendarWeek[0] && week < filteredStartCalendarWeek[1]) {
+				return false;
+			}
 
 			for (var traineeIndex = 0; traineeIndex < trainees.length; traineeIndex++) {
 				var traineeItem = trainees[traineeIndex];
 				var trainingBeginCalendarWeek = util.getWeekNumber(traineeItem.Trainee.GenerationDetails.TrainingBegin);
 
-				if (trainingBeginCalendarWeek[0] < year || (trainingBeginCalendarWeek[0] === year && trainingBeginCalendarWeek[1] <= week)) {
+				if (trainingBeginCalendarWeek[0] < year || trainingBeginCalendarWeek[0] === year && trainingBeginCalendarWeek[1] <= week) {
 					// Trainee had to create a report for this calendar week
 
 					// Create a dummy report if this report doesn't exist
@@ -299,13 +306,18 @@ sap.ui.define([
 
 					var report = traineeItem.Reports[year][week];
 					if (filterSelection.ReportStatus) {
+						var isReportRelevant = false;
 						for (i = 0; i < filterSelection.ReportStatus.length; i++) {
 							if (filterSelection.ReportStatus[i] === report.StatusId) {
-								return true;
+								isRelevant = true;
+								isReportRelevant = true;
 							}
 						}
+						if (!isReportRelevant) {
+							traineeItem.Reports[year][week] = null;
+						}
 					} else {
-						return true;
+						isRelevant = true;
 					}
 				} else {
 					// Trainee didn't have to create a report for this calendar week
@@ -313,7 +325,7 @@ sap.ui.define([
 				}
 			}
 
-			return false;
+			return isRelevant;
 		},
 
 		transformTraineeDataToRowModel: function(data) {
@@ -334,6 +346,10 @@ sap.ui.define([
 
 				//				traineeItem.Trainee = "/" + odata.createKey("Persons", trainee);
 				traineeItem.Trainee = trainee;
+
+				if (traineeIndex === 2) {
+					console.log("here");
+				}
 
 				// Loop through reports of trainee from odata response
 				for (var reportIndex = 0; reportIndex < trainee.Reports.results.length; reportIndex++) {

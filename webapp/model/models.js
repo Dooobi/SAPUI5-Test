@@ -12,12 +12,12 @@ sap.ui.define([
 			return oModel;
 		},
 		
-		createTableModel: function() {
+		createColumnModel: function() {
 			var oModel = new JSONModel();
 			var currentDate = new Date();
 			var json = {
 				Columns: [{
-					Label: "Trainee"
+					isTraineeColumn: true
 				}, {
 					Year: "2014",
 					Kw: "20",
@@ -44,7 +44,22 @@ sap.ui.define([
 			return oModel;
 		},
 		
-		createDataModel: function() {
+		createColumnModelNoRelevantReports: function() {
+			var oModel = new JSONModel();
+			var currentDate = new Date();
+			var json = {
+				Columns: [{
+					isTraineeColumn: true
+				}, {
+					noRelevantReports: true
+				}]
+			};
+
+			oModel.setData(json);
+			return oModel;
+		},
+		
+		createRowModel: function() {
 			var oModel = new JSONModel();
 			var json = {
 				Trainees: [{

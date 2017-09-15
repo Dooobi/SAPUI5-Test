@@ -7,14 +7,18 @@ sap.ui.define([
 
 	var FRAGMENT_NAME = "my.namespace.view.fragment.SettingsDialog";
 
+	var _firstOpen = true;
 	var _dialog, _mainController;
 	var _filterSelection = {};
 	var _defaultFilterSelection = {
 		ReportStatus: {
-			"NEW": true
+			"TRAINER": true,
+			"HEAD": true,
+			"APPROVED": true,
+			"REJECTED": true
 		}
 	};
-
+	
 	/**
 	 * Extracts the keys of an object and returns them in an array
 	 * @param {Object} The object to extract the keys from
@@ -70,7 +74,6 @@ sap.ui.define([
 		// forward compact/cozy style into Dialog
 		_dialog.addStyleClass(contentDensityClass);
 
-		_selectDefaultFilterItems();
 	}
 
 	return Controller.extend("my.namespace.controller.fragment.SettingsController", {
@@ -81,18 +84,21 @@ sap.ui.define([
 			_mainController = mainController;
 			_createDialog(this, view, contentDensityClass);
 			_filterSelection = _objectKeysToArray(_defaultFilterSelection);
-			console.log(_filterSelection);
 		},
 
 		getDialog: function() {
+			if (_firstOpen) {
+				_firstOpen = false;
+				_selectDefaultFilterItems();
+			}
 			return _dialog;
 		},
 
 		onConfirm: function(event) {
 			var filterItems = event.getParameter("filterItems");
-			
+
 			_filterSelection = {};
-			
+
 			for (var i = 0; i < filterItems.length; ++i) {
 				var filterType = filterItems[i].getParent().getKey();
 				var value = filterItems[i].getKey();
@@ -112,7 +118,48 @@ sap.ui.define([
 
 		onResetFilters: function() {
 			_selectDefaultFilterItems();
-		}
+		},
+		
+		getFilteredStartDate: function() {
+			var value = null;
+			if (_filterSelection["Time"]) {
+				value = _filterSelection["Time"][0];
+			}
+			
+			var JANUARY = 0;
+			var SEPTEMBER = 8;
 
+			var current = new Date();
+			var date = new Date(current.getFullYear(), current.getMonth(), current.getDate()); // time -> 00:00:00
+
+			switch (value) {
+				case "week1":
+					date.setDate(date.getDate() - 7);
+					break;
+				case "month3":
+					date.setMonth(date.getMonth() - 3);
+					break;
+				case "month6":
+					date.setMonth(date.getMonth() - 6);
+					break;
+				case "month12":
+					date.setMonth(date.getMonth() - 12);
+					break;
+				case "trainingYear":
+					date.setMonth(SEPTEMBER);
+					date.setDate(1);
+
+					if (date > current) {
+						date.setFullYear(current.getFullYear() - 1);
+					}
+
+					break;
+				default: // none
+					date.setFullYear(0);
+					date.setMonth(JANUARY);
+					date.setDate(1);
+			}
+			return date;
+		}
 	});
 });
