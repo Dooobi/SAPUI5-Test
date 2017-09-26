@@ -7,30 +7,11 @@ sap.ui.define([
 	"my/namespace/customcontrol/CustomTooltip",
 	"sap/ui/core/format/DateFormat",
 	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
-], function(BaseController, JSONModel, SettingsController, formatter, util, CustomTooltip, DateFormat, Filter, FilterOperator) {
+	"sap/ui/model/FilterOperator",
+	"sap/m/MessageToast",
+	"sap/m/UploadCollectionParameter"
+], function(BaseController, JSONModel, SettingsController, formatter, util, CustomTooltip, DateFormat, Filter, FilterOperator, MessageToast, UploadCollectionParameter) {
 	"use strict";
-
-	var DUMMY_REPORT_OBJECT = {
-		ReportId: null,
-		DepartmentId: null,
-		HeadId: null,
-		TrainerId: null,
-		StatusId: "NEW",
-		TraineeId: null,
-		Type: null,
-		WeekStart: null,
-		HasNewHistoryEntry: false
-	};
-
-	var c = [];
-	var diff = "";
-	var _columnIndex = 0,
-		_timeout = null;
-	var _firstTrainingBegin = null;
-	var _dateFormat = DateFormat.getDateInstance();
-
-	var _settingsController = null;
 
 	return BaseController.extend("my.namespace.controller.Main", {
 
@@ -45,436 +26,343 @@ sap.ui.define([
 		 * Called when the worklist controller is instantiated.
 		 * @public
 		 */
-		onInit: function() {
-			_settingsController = new SettingsController(this, this.getView(), this.getOwnerComponent().getContentDensityClass());
+		onInit: function () {
+			var sPath,
+				oModel,
+				oFileTypesModel,
+				mFileTypesData,
+				oFileTypesBox,
+				oUploadCollection;
 
-			this.getModel().metadataLoaded().then(this.afterMetadataLoaded.bind(this));
+			// set mock data
+			sPath = jQuery.sap.getModulePath("sap.m.sample.UploadCollection", "/uploadCollection.json");
+			oModel = new JSONModel(sPath);
+			this.getView().setModel(oModel);
 
-			//			var customTooltip = new CustomTooltip();
-			//			customTooltip.setView(this.getView());
-			//			this.getView().byId("myIcon").setTooltip(customTooltip)
-		},
+			oFileTypesModel = new sap.ui.model.json.JSONModel();
 
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+			mFileTypesData = {
+				"items": [
+					{
+						"key": "jpg",
+						"text": "jpg"
+					},
+					{
+						"key": "txt",
+						"text": "txt"
+					},
+					{
+						"key": "ppt",
+						"text": "ppt"
+					},
+					{
+						"key": "doc",
+						"text": "doc"
+					},
+					{
+						"key": "xls",
+						"text": "xls"
+					},
+					{
+						"key": "pdf",
+						"text": "pdf"
+					},
+					{
+						"key": "png",
+						"text": "png"
+					}
+				],
+				"selected" : ["jpg", "txt", "ppt", "doc", "xls", "pdf", "png"]
+			};
 
-		openFilterDialog: function() {
-			_settingsController.getDialog().open();
-		},
+			oFileTypesModel.setData(mFileTypesData);
+			this.getView().setModel(oFileTypesModel, "fileTypes");
 
-		afterMetadataLoaded: function() {
-			this.loadDataFromService();
-		},
+			oFileTypesBox = this.getView().byId("fileTypesBox");
+			oFileTypesBox.setSelectedItems(oFileTypesBox.getItems());
 
-		onAddPress: function() {
-			var x = ['H', 'E', 'R', 'E'];
-			var y = ['F', 'E', 'A', 'R'];
-
-			var lcsLength = this.lcsLength(x, y);
-			this.printDiff(x, y, 2, 2);
-			console.log(lcsLength);
-			console.log(diff);
-		},
-
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
-
-		loadDataFromService: function() {
-			var odata = this.getModel();
-			var aFilters = [];
-
-			aFilters.push(new Filter("IsTrainee", sap.ui.model.FilterOperator.EQ, true));
-
-			var filterSelection = _settingsController.getFilterSelection();
-			if (filterSelection.Generation) {
-				filterSelection.Generation.forEach(function(item) {
-					aFilters.push(new Filter("GenerationId", FilterOperator.EQ, item));
-				});
-			}
-			if (filterSelection.Trainee) {
-				filterSelection.Trainee.forEach(function(item) {
-					aFilters.push(new Filter("PerId", FilterOperator.EQ, item));
-				});
-			}
-
-			odata.read("/Persons", {
-				urlParameters: {
-					"$expand": "Reports, GenerationDetails"
-				},
-				filters: aFilters,
-				success: function(data) {
-					// transform data into necessary format
-					// and put it into a json model
-					_firstTrainingBegin = null;
-					var rowModel = this.transformTraineeDataToRowModel(data.results);
-					var columnModel = this.transformRowModelToColumnModel(rowModel.getData());
-
-					this.setModel(rowModel, "rowModel");
-					this.setModel(columnModel, "columnModel");
+			oUploadCollection = this.getView().byId("UploadCollection");
+			oUploadCollection.setFileType(oFileTypesBox.getSelectedKeys());
+			// Sets the text to the label
+			oUploadCollection.addEventDelegate({
+				onBeforeRendering : function () {
+					this.getView().byId("attachmentTitle").setText("Upload");
 				}.bind(this)
 			});
 		},
 
-		afterAllColumnsAdded: function() {},
-
-		columnTemplate: function(oContext, index) {
-			if (index === 0) {
-				return new sap.m.Text({
-					text: {
-						path: "rowModel>Trainee/Firstname",
-						formatter: formatter.formatCellText
-					}
-				});
-			}
-
-			return new sap.ui.core.Icon({
-				src: {
-					path: "rowModel>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
-					formatter: formatter.getIconSrc
-				},
-				color: {
-					path: "rowModel>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId",
-					formatter: formatter.getIconColor
-				},
-				tooltip: {
-					path: "rowModel>Reports/" + oContext.Year + "/" + oContext.Kw + "/StatusId"
-				}
-			});
-		},
-
-		firstColumnFactory: function(id, context) {
-			var column = new sap.ui.table.Column({
-				label: "Trainee",
-				hAlign: "Center",
-				template: this.columnTemplate(context.getObject(), _columnIndex)
-			});
-
-			this.keepTrackOfColumnIndex();
-
-			return column;
-		},
-
-		columnFactory: function(id, context) {
-			if (_columnIndex === 0) {
-				return this.firstColumnFactory(id, context);
-			}
-
-			var columnsData = this.getModel("columnModel").getProperty("/Columns");
-			var yearsData = this.getModel("columnModel").getProperty("/Years");
-			var oContext = context.getObject();
-			var headerSpan = 1;
-
-			if (this.isFirstColumnOfYear(columnsData, context)) {
-				var countCalendarWeeks = this.getColumnCountForYear(yearsData, context);
-				headerSpan = [countCalendarWeeks, 1];
-			}
-
-			var column = new sap.ui.table.Column({
-				hAlign: "Center",
-				headerSpan: headerSpan,
-				multiLabels: [
-					new sap.m.Label({
-						text: oContext.Year
-					}),
-					new sap.m.Label({
-						text: oContext.Kw,
-						tooltip: (oContext.Date ? _dateFormat.format(oContext.Date, false) : "unknown")
-					})
-				],
-				template: this.columnTemplate(oContext, _columnIndex)
-			});
-
-			this.keepTrackOfColumnIndex();
-
-			return column;
-		},
-
-		isFirstColumnOfYear: function(columnsData, context) {
-			var indexOfYear = -1;
-			var oContext = context.getObject();
-			for (var i = 0; i < columnsData.length; i++) {
-				if (columnsData[i].Year === oContext.Year) {
-					if (indexOfYear === -1) {
-						indexOfYear = 0;
-					}
-					if (columnsData[i].Kw === oContext.Kw) {
-						break;
-					}
-					indexOfYear++;
-				}
-			}
-			return indexOfYear === 0;
-		},
-
-		getColumnCountForYear: function(yearsData, context) {
-			var oContext = context.getObject();
-			var countCalendarWeeks = 1;
-			yearsData.forEach(function(item) {
-				if (item.Year === oContext.Year) {
-					countCalendarWeeks = item.Count;
-				}
-			});
-			return countCalendarWeeks;
-		},
-
-		keepTrackOfColumnIndex: function() {
-			// Keep track of _columnIndex
-			_columnIndex++;
-			if (_timeout) {
-				clearTimeout(_timeout);
-				_timeout = null;
-			}
-			_timeout = setTimeout(function() {
-				_columnIndex = 0;
-				this.afterAllColumnsAdded();
-			}.bind(this), 0);
-		},
-
-		lcsLength: function(x, y) { // x: first character array, y: second character array
-			var i = 0,
-				j = 0;
-
-			// Initialize two-dimensional array
-			for (i = 0; i < x.length + 2; i++) {
-				c[i] = [];
-			}
-
-			// Set first column to 0
-			for (i = 0; i <= x.length; i++) {
-				c[i][0] = 0;
-			}
-			// Set first row to 0
-			for (j = 0; j <= y.length; j++) {
-				c[0][j] = 0;
-			}
-
-			for (i = 1; i <= x.length; i++) {
-				for (j = 1; j <= y.length; j++) {
-					if (x[i] === y[j]) {
-						c[i][j] = c[i - 1][j - 1] + 1;
-					} else {
-						c[i][j] = Math.max(c[i][j - 1], c[i - 1][j]);
-					}
-				}
-			}
-			return c[x.length][y.length];
-		},
-
-		printDiff: function(x, y, i, j) {
-			if (i > 0 && j > 0 && x[i] === y[j]) {
-				this.printDiff(c, x, y, i - 1, j - 1);
-				diff += "  " + x[i];
-			} else if (j > 0 && (i === 0 || c[i][j - 1] >= c[i - 1][j])) {
-				this.printDiff(c, x, y, i, j - 1);
-				diff += "+ " + y[j];
-			} else if (i > 0 && (j === 0 || c[i][j - 1] < c[i - 1][j])) {
-				this.printDiff(c, x, y, i - 1, j);
-				diff += "- " + x[i];
+		formatAttribute : function (sValue) {
+			jQuery.sap.require("sap.ui.core.format.FileSizeFormat");
+			if (jQuery.isNumeric(sValue)) {
+				return sap.ui.core.format.FileSizeFormat.getInstance({
+					binaryFilesize : false,
+					maxFractionDigits : 1,
+					maxIntegerDigits : 3
+				}).format(sValue);
 			} else {
-				diff += "";
+				return sValue;
 			}
 		},
 
-		_hasCalendarWeekRelevantReports: function(week, year, rowData) {
+		onChange: function(oEvent) {
+			var oUploadCollection = oEvent.getSource();
+			// Header Token
+			var oCustomerHeaderToken = new UploadCollectionParameter({
+				name : "x-csrf-token",
+				value : "securityTokenFromModel"
+			});
+			oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
+		},
+
+		onFileDeleted: function(oEvent) {
+			this.deleteItemById(oEvent.getParameter("documentId"));
+			MessageToast.show("FileDeleted event triggered.");
+		},
+
+		deleteItemById: function(sItemToDeleteId){
+			var oData = this.getView().byId("UploadCollection").getModel().getData();
+			var aItems = jQuery.extend(true, {}, oData).items;
+			jQuery.each(aItems, function(index) {
+				if (aItems[index] && aItems[index].documentId === sItemToDeleteId) {
+					aItems.splice(index, 1);
+				}
+			});
+			this.getView().byId("UploadCollection").getModel().setData({
+				"items" : aItems
+			});
+			this.getView().byId("attachmentTitle").setText(this.getAttachmentTitleText());
+		},
+
+		deleteMultipleItems: function(aItemsToDelete){
+			var oData = this.getView().byId("UploadCollection").getModel().getData();
+			var nItemsToDelete = aItemsToDelete.length;
+			var aItems = jQuery.extend(true, {}, oData).items;
 			var i = 0;
-			var trainees = rowData.Trainees;
-			var filterSelection = _settingsController.getFilterSelection();
-			var filteredStartDate = _settingsController.getFilteredStartDate();
-			var isRelevant = false;
+			jQuery.each(aItems, function(index) {
+				if (aItems[index]) {
+					for (i = 0; i < nItemsToDelete; i++){
+						if (aItems[index].documentId === aItemsToDelete[i].getDocumentId()){
+							aItems.splice(index, 1);
+						}
+					}
+				}
+			});
+			this.getView().byId("UploadCollection").getModel().setData({
+				"items" : aItems
+			});
+			this.getView().byId("attachmentTitle").setText("Upload");
+		},
 
-			var filteredStartCalendarWeek = util.getWeekNumber(filteredStartDate);
-			if (year < filteredStartCalendarWeek[0] || year === filteredStartCalendarWeek[0] && week < filteredStartCalendarWeek[1]) {
-				return false;
+		onFilenameLengthExceed : function() {
+			MessageToast.show("FilenameLengthExceed event triggered.");
+		},
+
+		onFileRenamed: function(oEvent) {
+			var oData = this.getView().byId("UploadCollection").getModel().getData();
+			var aItems = jQuery.extend(true, {}, oData).items;
+			var sDocumentId = oEvent.getParameter("documentId");
+			jQuery.each(aItems, function(index) {
+				if (aItems[index] && aItems[index].documentId === sDocumentId) {
+					aItems[index].fileName = oEvent.getParameter("item").getFileName();
+				}
+			});
+			this.getView().byId("UploadCollection").getModel().setData({
+				"items" : aItems
+			});
+			MessageToast.show("FileRenamed event triggered.");
+		},
+
+		onFileSizeExceed : function() {
+			MessageToast.show("FileSizeExceed event triggered.");
+		},
+
+		onTypeMissmatch : function() {
+			MessageToast.show("TypeMissmatch event triggered.");
+		},
+
+		onUploadComplete: function(oEvent) {
+			var oData = this.getView().byId("UploadCollection").getModel().getData();
+			var aItems = jQuery.extend(true, {}, oData).items;
+			var oItem;
+			var sUploadedFile = oEvent.getParameter("files")[0].fileName;
+			// at the moment parameter fileName is not set in IE9
+			if (!sUploadedFile) {
+				var aUploadedFile = (oEvent.getParameters().getSource().getProperty("value")).split(/\" "/);
+				sUploadedFile = aUploadedFile[0];
 			}
-
-			for (var traineeIndex = 0; traineeIndex < trainees.length; traineeIndex++) {
-				var traineeItem = trainees[traineeIndex];
-				var trainingBeginCalendarWeek = util.getWeekNumber(traineeItem.Trainee.GenerationDetails.TrainingBegin);
-
-				if (trainingBeginCalendarWeek[0] < year || trainingBeginCalendarWeek[0] === year && trainingBeginCalendarWeek[1] <= week) {
-					// Trainee had to create a report for this calendar week
-
-					// Create a dummy report if this report doesn't exist
-					if (!traineeItem.Reports[year]) {
-						traineeItem.Reports[year] = {};
-					}
-					if (!traineeItem.Reports[year][week]) {
-						traineeItem.Reports[year][week] = DUMMY_REPORT_OBJECT;
-					}
-
-					var report = traineeItem.Reports[year][week];
-					if (filterSelection.ReportStatus) {
-						var isReportRelevant = false;
-						for (i = 0; i < filterSelection.ReportStatus.length; i++) {
-							if (filterSelection.ReportStatus[i] === report.StatusId) {
-								isRelevant = true;
-								isReportRelevant = true;
-							}
+			oItem = {
+					"documentId" : jQuery.now().toString(), // generate Id,
+					"fileName" : sUploadedFile,
+					"mimeType" : "",
+					"thumbnailUrl" : "",
+					"url" : "",
+					"attributes":[
+						{
+							"title" : "Uploaded By",
+							"text" : "You"
+						},
+						{
+							"title" : "Uploaded On",
+							"text" : new Date(jQuery.now()).toLocaleDateString()
+						},
+						{
+							"title" : "File Size",
+							"text" : "505000"
 						}
-						if (!isReportRelevant) {
-							traineeItem.Reports[year][week] = null;
-						}
-					} else {
-						isRelevant = true;
-					}
+					]
+			};
+
+			if (this.getView().byId("modeSwitch").getState()){
+				oItem.visibleEdit = false;
+				oItem.visibleDelete = false;
+			}else {
+				oItem.visibleEdit = true;
+				oItem.visibleDelete = true;
+			}
+			aItems.unshift(oItem);
+			this.getView().byId("UploadCollection").getModel().setData({
+				"items" : aItems
+			});
+			// Sets the text to the label
+			this.getView().byId("attachmentTitle").setText(this.getAttachmentTitleText());
+			// delay the success message for to notice onChange message
+			setTimeout(function() {
+				MessageToast.show("UploadComplete event triggered.");
+			}, 4000);
+		},
+
+		onBeforeUploadStarts: function(oEvent) {
+			// Header Slug
+			var oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+				name : "slug",
+				value : oEvent.getParameter("fileName")
+			});
+			oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+			MessageToast.show("BeforeUploadStarts event triggered.");
+		},
+
+		onUploadTerminated: function() {
+			/*
+			// get parameter file name
+			var sFileName = oEvent.getParameter("fileName");
+			// get a header parameter (in case no parameter specified, the callback function getHeaderParameter returns all request headers)
+			var oRequestHeaders = oEvent.getParameters().getHeaderParameter();
+			*/
+		},
+
+		onFileTypeChange: function() {
+			var oUploadCollection = this.getView().byId("UploadCollection");
+			var oFileTypesMultiComboBox = this.getView().byId("fileTypesBox");
+			oUploadCollection.setFileType(oFileTypesMultiComboBox.getSelectedKeys());
+		},
+
+		onSelectAllPress: function(oEvent) {
+			var oUploadCollection = this.getView().byId("UploadCollection");
+			if (!oEvent.getSource().getPressed()){
+				this.deselectAllItems(oUploadCollection);
+				oEvent.getSource().setPressed(false);
+				oEvent.getSource().setText("Select all");
+			} else {
+				this.deselectAllItems(oUploadCollection);
+				oUploadCollection.selectAll();
+				oEvent.getSource().setPressed(true);
+				oEvent.getSource().setText("Deselect all");
+			}
+			this.onSelectionChange(oEvent);
+		},
+
+		deselectAllItems: function(oUploadCollection){
+			var aItems = oUploadCollection.getItems();
+			for (var i = 0; i < aItems.length; i++){
+				oUploadCollection.setSelectedItem(aItems[i], false);
+			}
+		},
+
+		getAttachmentTitleText: function(){
+			var aItems = this.getView().byId("UploadCollection").getItems();
+			return "Uploaded (" + aItems.length + ")";
+		},
+
+		onSwitchUploaderChange: function(oEvent){
+			var oUploadCollection = this.getView().byId("UploadCollection");
+			var bState = oEvent.getParameter("state");
+			if (bState){
+				oUploadCollection.setUploadEnabled(true);
+			} else {
+				oUploadCollection.setUploadEnabled(false);
+			}
+		},
+
+		onSwitchUploadInvisibleChange: function() {
+			var oUploadCollection = this.getView().byId("UploadCollection");
+			var bUploadButtonInvisible = oUploadCollection.getUploadButtonInvisible();
+			oUploadCollection.setUploadButtonInvisible(!bUploadButtonInvisible);
+		},
+
+		onSwitchModeChange: function(){
+			// Sets to MultiSelect
+			if (this.getView().byId("modeSwitch").getState()){
+				this.setVisibleEditAndDelete(false);
+				this.enableToolbarItems(true);
+				this.getView().byId("UploadCollection").setMode("MultiSelect");
+			}else {
+				// Sets to SingleSelectMaster
+				this.setVisibleEditAndDelete(true);
+				this.enableToolbarItems(false);
+				this.getView().byId("UploadCollection").setMode("SingleSelectMaster");
+			}
+		},
+
+		setVisibleEditAndDelete: function(status){
+			var aItems = this.getView().byId("UploadCollection").getItems();
+			for (var i = 0; i < aItems.length; i++){
+				aItems[i].setVisibleEdit(status);
+				aItems[i].setVisibleDelete(status);
+			}
+		},
+
+		enableToolbarItems: function(status){
+			this.getView().byId("selectAllButton").setVisible(status);
+			this.getView().byId("deleteSelectedButton").setVisible(status);
+			this.getView().byId("selectAllButton").setEnabled(status);
+			// This is only enabled if there is a selected item in multi-selection mode
+			if (this.getView().byId("UploadCollection").getSelectedItems().length > 0) {
+				this.getView().byId("deleteSelectedButton").setEnabled(true);
+			}
+		},
+
+		onDeleteSelectedItems: function(){
+			var aSelectedItems = this.getView().byId("UploadCollection").getSelectedItems();
+			this.deleteMultipleItems(aSelectedItems);
+			if (this.getView().byId("UploadCollection").getSelectedItems().length < 1){
+				this.getView().byId("selectAllButton").setPressed(false);
+				this.getView().byId("selectAllButton").setText("Select all");
+			}
+			MessageToast.show("Delete selected items button press.");
+		},
+
+		onSearch: function(){
+			MessageToast.show("Search feature isn't available in this sample");
+		},
+
+		onSelectionChange: function(){
+			var oUploadCollection = this.getView().byId("UploadCollection");
+			// Only it is enabled if there is a selected item in multi-selection mode
+			if (oUploadCollection.getMode() === "MultiSelect"){
+				if (oUploadCollection.getSelectedItems().length > 0) {
+					this.getView().byId("deleteSelectedButton").setEnabled(true);
 				} else {
-					// Trainee didn't have to create a report for this calendar week
-
+					this.getView().byId("deleteSelectedButton").setEnabled(false);
 				}
 			}
-
-			return isRelevant;
 		},
 
-		transformTraineeDataToRowModel: function(data) {
-			var json = {
-				Trainees: []
-			};
-
-			// Loop through trainees from odata response
-			for (var traineeIndex = 0; traineeIndex < data.length; traineeIndex++) {
-				var traineeItem = {
-					Reports: {}
-				};
-				var trainee = data[traineeIndex];
-
-				if (_firstTrainingBegin === null || trainee.GenerationDetails.TrainingBegin < _firstTrainingBegin) {
-					_firstTrainingBegin = trainee.GenerationDetails.TrainingBegin;
-				}
-
-				//				traineeItem.Trainee = "/" + odata.createKey("Persons", trainee);
-				traineeItem.Trainee = trainee;
-
-				if (traineeIndex === 2) {
-					console.log("here");
-				}
-
-				// Loop through reports of trainee from odata response
-				for (var reportIndex = 0; reportIndex < trainee.Reports.results.length; reportIndex++) {
-					var report = trainee.Reports.results[reportIndex];
-
-					var weeknumber = util.getWeekNumber(report.WeekStart);
-
-					if (!traineeItem.Reports[weeknumber[0]]) {
-						traineeItem.Reports[weeknumber[0]] = {};
-					}
-					//					traineeItem.Reports[weeknumber[0]][weeknumber[1]] = "/" + odata.createKey("Reports", report);
-					traineeItem.Reports[weeknumber[0]][weeknumber[1]] = report;
-				}
-
-				json.Trainees.push(traineeItem);
-			}
-
-			return new JSONModel(json);
+		onAttributePress: function(oEvent) {
+			MessageToast.show("Attribute press event - " + oEvent.getSource().getTitle() + ": " + oEvent.getSource().getText());
 		},
 
-		transformRowModelToColumnModel: function(rowData) {
-			var json = {
-				Columns: [],
-				Years: []
-			};
-			var trainingBegin = _firstTrainingBegin;
-			var calendarWeek = util.getWeekNumber(trainingBegin);
-			var currentCalendarWeek = util.getWeekNumber(new Date());
-
-			// Fill json
-			// First column is for Trainee name
-			json.Columns.push({
-				Label: "Trainee"
-			});
-			// Following columns are for the calendar weeks from _firstTrainingBegin to current date
-			while (calendarWeek[0] < currentCalendarWeek[0] || (calendarWeek[0] === currentCalendarWeek[0] && calendarWeek[1] <=
-					currentCalendarWeek[1])) {
-
-				// Check if relevant reports for this calendar week exist
-				if (this._hasCalendarWeekRelevantReports(calendarWeek[1], calendarWeek[0], rowData)) {
-					json.Columns.push({
-						Year: calendarWeek[0],
-						Kw: calendarWeek[1],
-						Date: trainingBegin
-					});
-
-					var yearItem = json.Years.find(function(item) {
-						return item.Year === calendarWeek[0];
-					});
-					if (yearItem) {
-						yearItem.Count++;
-					} else {
-						json.Years.push({
-							Year: calendarWeek[0],
-							Count: 1
-						});
-					}
-				}
-
-				trainingBegin = util.addDays(trainingBegin, 7);
-				calendarWeek = util.getWeekNumber(trainingBegin);
-			}
-
-			var model = new JSONModel(json);
-			model.setSizeLimit(json.Columns.length + 2);
-
-			return model;
-		},
-
-		transformRowModelToColumnModel2: function(rowData) {
-			var json = {
-				Columns: [],
-				Years: []
-			};
-
-			var years = [];
-
-			var trainees = rowData.Trainees;
-			for (var traineeIndex = 0; traineeIndex < trainees.length; traineeIndex++) {
-				var trainee = trainees[traineeIndex];
-
-				// Loop through the year properties of a Trainee's reports
-				Object.keys(trainee.Reports).forEach(function(keyYear, indexYear) {
-					// key: the name of the object key
-					// index: the ordinal position of the key within the object 
-					if (!years[keyYear]) {
-						years[keyYear] = [];
-					}
-					var year = trainee.Reports[keyYear];
-
-					// Loop through the week properties of a Year which contains the Trainee's reports
-					Object.keys(year).forEach(function(keyWeek, indexWeek) {
-						if (years[keyYear].indexOf(keyWeek) < 0) {
-							// This week is not stored in the years array yet
-							years[keyYear].push(keyWeek);
-						}
-					});
-
-				});
-			}
-
-			// Fill json
-			// First column is for Trainee name
-			json.Columns.push({
-				Label: "Trainee"
-			});
-			// Following columns are calendar weeks for reports
-			Object.keys(years).forEach(function(keyYear, indexYear) {
-				var usedWeeksInYear = years[keyYear];
-				// Make column objects for every used week in year
-				usedWeeksInYear.forEach(function(week) {
-					json.Columns.push({
-						Year: keyYear,
-						Kw: week
-					});
-				});
-
-				// Make year objects with the count of used weeks
-				json.Years.push({
-					Year: keyYear,
-					Count: usedWeeksInYear.length
-				});
-			});
-
-			return new JSONModel(json);
+		onMarkerPress: function(oEvent) {
+			MessageToast.show("Marker press event - " + oEvent.getSource().getType());
 		}
 	});
 });
