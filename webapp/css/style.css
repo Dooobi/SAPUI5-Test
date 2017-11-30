@@ -1,3 +1,14 @@
+.myGridCellStyle {
+	background-color: #DDDDDD;
+	margin: 0px !important;
+	border-color: #abcdef;
+	border-style: solid;
+}
+
+.myGridStyle {
+	background-color: #EEEEEE;
+}
+
 @font-face {
     font-family: "approver";
     src: url("fonts/approver.ttf") format("truetype");

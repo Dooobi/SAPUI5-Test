@@ -1,39 +1,85 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns:m="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns="sap.ui.table" xmlns:custom="my.namespace.customcontrol">
+<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form"
+	xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:table="sap.ui.table"
+	xmlns:custom="my.namespace.customcontrol">
 	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
+		<semantic:subHeader></semantic:subHeader>
 		<semantic:content>
-			<Table id="table" visibleRowCount="{= ${rowModel>/Trainees}.length }" visibleRowCountMode="Fixed" fixedColumnCount="1" columns="{ path: 'columnModel>/Columns', factory: '.columnFactory' }" rows="{rowModel>/Trainees}" noData="No Data" selectionMode="None" class="sapUiSmallMargin">
-				<title>
-					<m:Toolbar>
-						<core:Icon id="myIcon" src="sap-icon://action-settings">
-							<core:tooltip>
-								<custom:CustomTooltip/>
-							</core:tooltip>
-						</core:Icon>
-						<m:ToolbarSpacer/>
-						<m:Button icon="sap-icon://filter" press="openFilterDialog"/>
-					</m:Toolbar>
-				</title>
-				<columns>
-					<!--<Column label="{table>Year}">-->
-					<!--headerSpan="{ parts: [{path: 'table>Year'}, {path: 'table>/Years'}], formatter: '.formatter.formatHeaderSpan' }"-->
-						<!--<multiLabels>-->
-							<!--<m:Label text="{table>Year}"/>-->
-							<!--<m:Label text="{table>Kw}"/>-->
-						<!--</multiLabels>-->
-					<!--	<template>-->
-					<!--		<m:Text text="abc" />-->
-					<!--	</template>-->
-					<!--</Column>-->
-				</columns>
-				<!--<rows>-->
-				<!--	<Row cells="{data>Reports}">-->
-				<!--		<cells>-->
-				<!--			<m:Text text="{data>ReportId}"/>-->
-				<!--		</cells>-->
-				<!--	</Row>-->
-				<!--</rows>-->
-			</Table>
+			<layout:Grid
+				id="grid"
+				width="{main>/grid/width}"
+				vSpacing="{main>/grid/vSpacing}"
+				hSpacing="{main>/grid/hSpacing}"
+				position="{main>/grid/position}"
+				defaultSpan="{main>/grid/defaultSpan}"
+				defaultIndent="{main>/grid/defaultIndent}"
+				containerQuery="{main>/grid/containerQuery}"
+				>
+				<!--
+				width: CSSWidth (100%)	Width of the grid
+				vSpacing: int
+				hSpacing: int
+				position: string ("Left") or ("Center") or ("Right")	Position of the grid in the container
+				defaultSpan: string ("XL3 L3 M6 S12")       How many columns do the controls take on the respective screen size by default (1-12)
+				defaultIndent: string ("XL0 L0 M0 S0")     How many empty cells are in front of the controls on the respective screen size by default (0-11)
+				containerQuery: bool ("false")		If the container size should be used to determine the size (XL, L, M, S) or the device screen size
+				-->
+				<Label text="Button: ">
+					<layoutData>
+						<layout:GridData
+							span="XL3 L3 M6 S12"
+							indent="XL0 L0 M0 S0"
+							visibleXL="true" visibleL="true" visibleM="true" visibleS="true"
+							linebreakXL="false" linebreakL="false" linebreakM="false" linebreakS="false"
+							/>
+							<!-- 
+							span: string ("XL3 L3 M6 S12")       How many columns does this control take on the respective screen size (1-12)
+							spanXL, spanL, spanM, spanS: int
+							indent: string ("XL3 L3 M6 S12")     How many empty cells are in front of the control on the respective screen size (0-11)
+							indentXL, indentL, indentM, indentS: int
+							visibleXL, visibleL, visibleM, visibleS: bool	Is the control visible on the respective screen size
+							moveBackwards: string ("XL3 L3 M6 S12")     How many cells is the control moved backwards on the respective screen size
+							moveForward: string ("XL3 L3 M6 S12")     How many cells is the control moved forward on the respective screen size
+							linebreak: string ("XL3 L3 M6 S12")		Is there a linebreak before the control on the respective screen size
+							-->
+					</layoutData>
+				</Label>
+				<Label text="SegmentedButton: "/>
+				<SegmentedButton width="100%" enabled="true" selectedKey="">
+					<items>
+						<SegmentedButtonItem key="taxi" text="Taxi" icon="sap-icon://taxi" visible="true" enabled="true"/>
+						<SegmentedButtonItem key="plane" text="Plane" icon="sap-icon://flight" visible="true" enabled="true"/>
+						<SegmentedButtonItem key="train" text="Train" icon="sap-icon://passenger-train" visible="true" enabled="true"/>
+					</items>
+				</SegmentedButton>
+			</layout:Grid>
+			<form:SimpleForm layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" labelSpanS="8" emptySpanL="6" emptySpanM="4" emptySpanS="0">
+				<!-- General settings -->
+				<Title text="General"/>
+				<Label text="restyleGrid"/>
+				<CheckBox selected="{main>/restyleGrid}"/>
+				<!-- Grid properties -->
+				<Title text="Grid"/>
+				<Label text="width"/>
+				<Input value="{main>/grid/width}"/>
+				<Label text="vSpacing"/>
+				<Input value="{main>/grid/vSpacing}"/>
+				<Label text="hSpacing"/>
+				<Input value="{main>/grid/hSpacing}"/>
+				<Label text="position"/>
+				<SegmentedButton width="100%" selectedKey="{main>/grid/position}">
+					<items>
+						<SegmentedButtonItem key="Left" text="Left"/>
+						<SegmentedButtonItem key="Center" text="Center"/>
+						<SegmentedButtonItem key="Right" text="Right"/>
+					</items>
+				</SegmentedButton>
+				<Label text="defaultSpan"/>
+				<Input value="{main>/grid/defaultSpan}"/>
+				<Label text="defaultIndent"/>
+				<Input value="{main>/grid/defaultIndent}"/>
+				<Label text="containerQuery"/>
+				<CheckBox select="onContainerQueryChange"/>
+			</form:SimpleForm>
 		</semantic:content>
 	</semantic:FullscreenPage>
 </mvc:View>
