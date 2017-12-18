@@ -1,3 +1,9 @@
+/*
+.tableHdr .sapMListTblHeaderCell {
+	padding: 0rem;
+}
+*/
+
 @font-face {
     font-family: "approver";
     src: url("fonts/approver.ttf") format("truetype");
