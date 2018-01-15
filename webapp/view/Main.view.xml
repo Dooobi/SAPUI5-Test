@@ -1,39 +1,73 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns:m="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns="sap.ui.table" xmlns:custom="my.namespace.customcontrol">
-	<semantic:FullscreenPage id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
-		<semantic:content>
-			<Table id="table" visibleRowCount="{= ${rowModel>/Trainees}.length }" visibleRowCountMode="Fixed" fixedColumnCount="1" columns="{ path: 'columnModel>/Columns', factory: '.columnFactory' }" rows="{rowModel>/Trainees}" noData="No Data" selectionMode="None" class="sapUiSmallMargin">
-				<title>
-					<m:Toolbar>
-						<core:Icon id="myIcon" src="sap-icon://action-settings">
-							<core:tooltip>
-								<custom:CustomTooltip/>
-							</core:tooltip>
-						</core:Icon>
-						<m:ToolbarSpacer/>
-						<m:Button icon="sap-icon://filter" press="openFilterDialog"/>
-					</m:Toolbar>
-				</title>
-				<columns>
-					<!--<Column label="{table>Year}">-->
-					<!--headerSpan="{ parts: [{path: 'table>Year'}, {path: 'table>/Years'}], formatter: '.formatter.formatHeaderSpan' }"-->
-						<!--<multiLabels>-->
-							<!--<m:Label text="{table>Year}"/>-->
-							<!--<m:Label text="{table>Kw}"/>-->
-						<!--</multiLabels>-->
-					<!--	<template>-->
-					<!--		<m:Text text="abc" />-->
-					<!--	</template>-->
-					<!--</Column>-->
-				</columns>
-				<!--<rows>-->
-				<!--	<Row cells="{data>Reports}">-->
-				<!--		<cells>-->
-				<!--			<m:Text text="{data>ReportId}"/>-->
-				<!--		</cells>-->
-				<!--	</Row>-->
-				<!--</rows>-->
-			</Table>
-		</semantic:content>
-	</semantic:FullscreenPage>
+<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:semantic="sap.m.semantic" xmlns:table="sap.ui.table" xmlns:form="sap.ui.layout.form" xmlns:custom="my.namespace.customcontrol">
+	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
+		<subHeader>
+		</subHeader>
+		<content>
+			<IconTabBar>
+				<items>
+					<IconTabFilter icon="sap-icon://hint" text="Ziel"/>
+					<IconTabSeparator/>
+					<IconTabFilter icon="sap-icon://it-system" text="Technisch">
+						<content>
+							<form:SimpleForm>
+								<core:Title text="System"/>
+								<Label text="Wollen Sie mehrere SAP-Systeme in ein S/4HANA-System überführen?"/>
+								<SegmentedButton selectedKey="dummy">
+									<items>
+										<SegmentedButtonItem text="Ja" key="yes"/>
+										<SegmentedButtonItem visible="false" key="dummy"/>
+										<SegmentedButtonItem text="Nein" key="no"/>
+									</items>
+								</SegmentedButton>
+								<!--<RadioButtonGroup>-->
+								<!--	<RadioButton text="Ja"/>-->
+								<!--	<RadioButton text="Nein"/>-->
+								<!--</RadioButtonGroup>-->
+								<Label text="Kann ein SAP-System als Template-System genutzt werden?"/>
+								<SegmentedButton selectedKey="dummy">
+									<items>
+										<SegmentedButtonItem text="Ja" key="yes"/>
+										<SegmentedButtonItem visible="false" key="dummy"/>
+										<SegmentedButtonItem text="Nein" key="no"/>
+									</items>
+								</SegmentedButton>
+								<Label text="Wünschen Sie ein RollOut Szenario?"/>
+								<SegmentedButton selectedKey="dummy">
+									<items>
+										<SegmentedButtonItem text="Ja" key="yes"/>
+										<SegmentedButtonItem visible="false" key="dummy"/>
+										<SegmentedButtonItem text="Nein" key="no"/>
+									</items>
+								</SegmentedButton>
+								<Label text="Welche externen SAP Produkte sind im Einsatz?"/>
+								<MultiComboBox>
+									<core:Item text="EWM" key="EWM"/>
+									<core:Item text="CRM" key="CRM"/>
+									<core:Item text="Keine" key="none"/>
+								</MultiComboBox>
+								<CheckBox text="Keine" textAlign="Left"/>
+								<Label text="Verwenden Sie neben SAP ERP ECC weitere integrierte Third-Party-Produkte?"/>
+								<Input />
+								<Label text="z.B.: VISTEX, FIS/wws, FIS/edc, ..."/>
+								<SegmentedButton selectedKey="dummy">
+									<items>
+										<SegmentedButtonItem text="Ja" key="yes"/>
+										<SegmentedButtonItem visible="false" key="dummy"/>
+										<SegmentedButtonItem text="Nein" key="no"/>
+									</items>
+								</SegmentedButton>
+								<core:Title text="Coding"/>
+								<Label text="Anzahl der Kundenobjekte?"/>
+								<Input/>
+							</form:SimpleForm>
+						</content>
+					</IconTabFilter>
+					<IconTabFilter icon="sap-icon://suitcase" text="Geschäftlich"/>
+					<IconTabSeparator icon="sap-icon://process"/>
+					<IconTabFilter icon="sap-icon://approvals" text="Ergebnis" enabled="false"/>
+				</items>
+			</IconTabBar>
+		</content>
+	</Page>
 </mvc:View>
