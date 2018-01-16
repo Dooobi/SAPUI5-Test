@@ -1,18 +1,23 @@
 <mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
-	xmlns:semantic="sap.m.semantic" xmlns:table="sap.ui.table" xmlns:form="sap.ui.layout.form" xmlns:custom="my.namespace.customcontrol">
+	xmlns:semantic="sap.m.semantic" xmlns:viz="sap.viz.ui5.controls" xmlns:table="sap.ui.table" xmlns:form="sap.ui.layout.form" xmlns:custom="my.namespace.customcontrol">
 	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<subHeader>
 		</subHeader>
 		<content>
+			<HBox height="50%">
+				<VBox alignItems="Center">
+					<viz:VizFrame xmlns="sap.viz" id="idpiechart" vizType="pie"/>
+				</VBox>
+			</HBox>
 			<IconTabBar>
 				<items>
 					<IconTabFilter icon="sap-icon://hint" text="Ziel"/>
 					<IconTabSeparator/>
-					<IconTabFilter icon="sap-icon://it-system" text="Technisch">
+					<IconTabFilter icon="sap-icon://it-system" text="Technisch" count="10/30">
 						<content>
 							<form:SimpleForm>
 								<core:Title text="System"/>
-								<Label text="Wollen Sie mehrere SAP-Systeme in ein S/4HANA-System überführen?"/>
+								<Label text="Wollen Sie mehrere SAP-Systeme in ein S/4HANA-System überführen?" class="sapUiTinyMarginBottom"/>
 								<SegmentedButton selectedKey="dummy">
 									<items>
 										<SegmentedButtonItem text="Ja" key="yes"/>
@@ -24,7 +29,7 @@
 								<!--	<RadioButton text="Ja"/>-->
 								<!--	<RadioButton text="Nein"/>-->
 								<!--</RadioButtonGroup>-->
-								<Label text="Kann ein SAP-System als Template-System genutzt werden?"/>
+								<Label required="true" text="Kann ein SAP-System als Template-System genutzt werden?" class="sapUiTinyMarginBottom"/>
 								<SegmentedButton selectedKey="dummy">
 									<items>
 										<SegmentedButtonItem text="Ja" key="yes"/>
@@ -32,7 +37,7 @@
 										<SegmentedButtonItem text="Nein" key="no"/>
 									</items>
 								</SegmentedButton>
-								<Label text="Wünschen Sie ein RollOut Szenario?"/>
+								<Label text="Wünschen Sie ein RollOut Szenario?" class="sapUiTinyMarginBottom"/>
 								<SegmentedButton selectedKey="dummy">
 									<items>
 										<SegmentedButtonItem text="Ja" key="yes"/>
@@ -40,7 +45,7 @@
 										<SegmentedButtonItem text="Nein" key="no"/>
 									</items>
 								</SegmentedButton>
-								<Label text="Welche externen SAP Produkte sind im Einsatz?"/>
+								<Label text="Welche externen SAP Produkte sind im Einsatz?" class="sapUiTinyMarginBottom"/>
 								<MultiComboBox>
 									<core:Item text="EWM" key="EWM"/>
 									<core:Item text="CRM" key="CRM"/>
@@ -63,11 +68,17 @@
 							</form:SimpleForm>
 						</content>
 					</IconTabFilter>
-					<IconTabFilter icon="sap-icon://suitcase" text="Geschäftlich"/>
+					<IconTabFilter icon="sap-icon://suitcase" text="Geschäftlich" count="0/10"/>
 					<IconTabSeparator icon="sap-icon://process"/>
 					<IconTabFilter icon="sap-icon://approvals" text="Ergebnis" enabled="false"/>
 				</items>
 			</IconTabBar>
 		</content>
+		<footer>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<Button text="Submit"/>
+			</Toolbar>
+		</footer>
 	</Page>
 </mvc:View>
