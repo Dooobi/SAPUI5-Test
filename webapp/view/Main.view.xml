@@ -1,6 +1,7 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns:table="sap.ui.table" xmlns:custom="my.namespace.customcontrol" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
+<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:semantic="sap.m.semantic" xmlns:code="sap.ui.codeeditor" xmlns:table="sap.ui.table" xmlns:custom="my.namespace.customcontrol"
+	xmlns:u="sap.ui.unified" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="true">
 		<customHeader>
 			<!--0..1-->
 			<!--sap.m.IBar-->
@@ -19,9 +20,218 @@
 			<!--Subheader directly under the header-->
 		</subHeader>
 		<content>
-			<!--0..n-->
-			<!--sap.ui.core.Control-->
-			<!--The content of this page -->
+			<VBox width="80%">
+				<f:SimpleForm>
+					<Title text="Input controls"/>
+					<!--FeedInput-->
+					<Label text="FeedInput:"/>
+					<FeedInput/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed">
+						<customData>
+							<core:CustomData key="text"
+								value="The ActionSelect control provides a list of predefined items that allows end users to choose options and additionally trigger some actions."/>
+						</customData>
+					</Button>
+					<!--ActionSelect-->
+					<Label text="ActionSelect:"/>
+					<ActionSelect>
+						<items>
+							<core:Item key="1" text="Test"/>
+							<core:Item key="2" text="Hallo"/>
+							<core:Item key="3" text="Asdf"/>
+						</items>
+					</ActionSelect>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--CheckBox-->
+					<Label text="CheckBox:"/>
+					<CheckBox text="Test"/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--CodeEditor-->
+					<Label text="sap.ui.codeeditor.CodeEditor:"/>
+					<code:CodeEditor/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--ColorPicker-->
+					<!--<Label text="sap.ui.unified.ColorPicker:"/>-->
+					<!--<u:ColorPicker/>-->
+					<!--<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>-->
+					<!--ComboBox-->
+					<Label text="ComboBox:"/>
+					<ComboBox>
+						<items>
+							<core:Item key="1" text="Test"/>
+							<core:Item key="2" text="Hallo"/>
+							<core:Item key="3" text="Asdf"/>
+						</items>
+					</ComboBox>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--DatePicker-->
+					<Label text="DatePicker:"/>
+					<DatePicker/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--DateRangeSelection-->
+					<Label text="DateRangeSelection:"/>
+					<DateRangeSelection/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--DateTimeInput-->
+					<Label text="DateTimeInput:"/>
+					<DateTimeInput/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--DateTimePicker-->
+					<Label text="DateTimePicker:"/>
+					<DateTimePicker/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--TimePicker-->
+					<Label text="TimePicker:"/>
+					<TimePicker/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--FacetFilter-->
+					<Label text="FacetFilter:"/>
+					<FacetFilter type="Simple" showPersonalization="true" showReset="true" reset="handleFacetFilterReset"
+						confirm="handleConfirm">
+						<lists>
+							<FacetFilterList title="List1" key="list1" mode="MultiSelect">
+								<items>
+									<FacetFilterItem text="Hallo" key="hallo" count="2"/>
+									<FacetFilterItem text="Test" key="test" count="1"/>
+									<FacetFilterItem text="Asdf" key="asdf"/>
+								</items>
+							</FacetFilterList>
+						</lists>
+					</FacetFilter>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--FileUploader-->
+					<Label text="FileUploader:"/>
+					<u:FileUploader/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--Input-->
+					<Label text="Input:"/>
+					<Input/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--MaskInput-->
+					<Label text="MaskInput:"/>
+					<MaskInput mask = "SAP-CCCCC-CCCCC" placeholderSymbol = "_" placeholder = "Enter activation key" >
+						<rules>
+							<MaskInputRule maskFormatSymbol = "C" regex = "[A-Z0-9]"/>
+						</rules>
+					</MaskInput>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--MenuButton-->
+					<Label text="MenuButton:"/>
+					<MenuButton text="File Menu" buttonMode="Split" defaultAction="onDefaultAction">
+						<menu>
+							<Menu itemSelected="onMenuAction">
+								<items>
+									<MenuItem text="Edit" icon="sap-icon://edit" />
+									<MenuItem text="Save" icon="sap-icon://save" />
+									<MenuItem text="Open" icon="sap-icon://open-folder" />
+								</items>
+							</Menu>
+						</menu>
+					</MenuButton>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--MultiComboBox-->
+					<Label text="MultiComboBox:"/>
+					<MultiComboBox enabled="false">
+						<items>
+							<core:Item key="1" text="Test"/>
+							<core:Item key="2" text="Hallo"/>
+							<core:Item key="3" text="Asdf"/>
+						</items>
+					</MultiComboBox>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--PlanningCalendar-->
+					<!--<Label text="MultiComboBox:"/>-->
+					<!--<u:PlanningCalendar-->
+					<!--	appointmentsVisualization="Filled"-->
+					<!--	showEmptyIntervalHeaders="false">-->
+					<!--	<u:toolbarContent>-->
+					<!--		<Title text="Title" titleStyle="H4"/>-->
+					<!--	</u:toolbarContent>-->
+					<!--</u:PlanningCalendar>-->
+					<!--<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>-->
+					<!--RadioButton-->
+					<Label text="RadioButton:"/>
+					<RadioButton text="Test"/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--RadioButtonGroup-->
+					<Label text="RadioButtonGroup:"/>
+					<RadioButtonGroup columns="2" width="100%" class="sapUiMediumMarginBottom">
+						<buttons>
+							<RadioButton id="RB1-1" text="Long Option Number 1"/>
+							<RadioButton id="RB1-2" text="Option 2" enabled="false"/>
+							<RadioButton id="RB1-3" text="Nr. 3" editable="false"/>
+							<RadioButton id="RB1-4" text="Long Option 4"/>
+						</buttons>
+					</RadioButtonGroup>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--RangeSlider-->
+					<Label text="RangeSlider:"/>
+					<RangeSlider/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--RatingIndicator-->
+					<Label text="RatingIndicator:"/>
+					<RatingIndicator/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--SearchField-->
+					<Label text="SearchField:"/>
+					<SearchField/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--SegmentedButton-->
+					<Label text="SegmentedButton:"/>
+					<SegmentedButton>
+						<items>
+							<SegmentedButtonItem icon="sap-icon://car-rental" text="Car" key="car"/>
+							<SegmentedButtonItem icon="sap-icon://passenger-train" text="Train" key="train"/>
+							<SegmentedButtonItem icon="sap-icon://flight" text="Plane" key="plane"/>
+						</items>
+					</SegmentedButton>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--Select-->
+					<Label text="Select:"/>
+					<Select showSecondaryValues= "true">
+						<core:ListItem key="ewm" text="EWM" additionalText= "Extended Warehouse Management"/>
+						<core:ListItem key="ewm" text="CRM" additionalText= "Customer Relationship Management"/>
+						<core:ListItem key="ewm" text="SCM" additionalText= "Supply Chain Management"/>
+					</Select>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--Slider-->
+					<Label text="Slider:"/>
+					<Slider min="0" max="30" enableTickmarks="true" class="sapUiSmallMarginBottom" width="100%">
+						<ResponsiveScale tickmarksBetweenLabels="3"/>
+					</Slider>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--StepInput-->
+					<Label text="StepInput:"/>
+					<StepInput
+                            value="7"
+                            displayValuePrecision="0"
+                            min="-10"
+                            max="10"
+                            step="1"
+                            largerStep="5"/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--Switch-->
+					<Label text="Switch:"/>
+					<Switch type="AcceptReject" state="true"/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--TextArea-->
+					<Label text="TextArea:"/>
+					<TextArea value="Lorem ipsum dolor st amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat. Lorem ipsum dolor st amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua." growing="true" width="100%"/>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--Token-->
+					<Label text="Token:"/>
+					<Token text="Test Token" />
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+					<!--Tokenizer-->
+					<Label text="Tokenizer:"/>
+					<Tokenizer>
+						<Token key="test" text="Test"/>
+						<Token key="hallo" text="Hallo"/>
+						<Token key="asdf" text="Asdf"/>
+					</Tokenizer>
+					<Button icon="sap-icon://hint" width="20px" press="onHintPressed" enabled="false"/>
+				</f:SimpleForm>
+			</VBox>
 		</content>
 		<footer>
 			<!--0..1-->
