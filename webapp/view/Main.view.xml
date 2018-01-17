@@ -64,7 +64,7 @@
 								</SegmentedButton>
 								<core:Title text="Coding"/>
 								<Label text="Anzahl der Kundenobjekte?"/>
-								<Input/>
+								<Input valueState="Warning"/>
 							</form:SimpleForm>
 						</content>
 					</IconTabFilter>
