@@ -1,5 +1,6 @@
-<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns:table="sap.ui.table" xmlns:custom="my.namespace.customcontrol" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+<mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:semantic="sap.m.semantic" xmlns:table="sap.ui.table" xmlns:custom="my.namespace.customcontrol" xmlns:form="sap.ui.layout.form"
+	xmlns:f="sap.f" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout">
 	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<customHeader>
 			<!--0..1-->
@@ -22,6 +23,125 @@
 			<!--0..n-->
 			<!--sap.ui.core.Control-->
 			<!--The content of this page -->
+			<l:ResponsiveSplitter defaultPane="default">
+				<l:PaneContainer orientation="Horizontal">
+					<l:SplitPane requiredParentWidth="400" id="default">
+						<Panel headerText="Warengruppen" class="sapUiNoContentPadding">
+							<List>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+								<ObjectListItem title="Warengruppe xyz" counter="2"/>
+							</List>
+						</Panel>
+					</l:SplitPane>
+					<l:SplitPane requiredParentWidth="600">
+						<Panel headerText="Marktplätze">
+							<Select forceSelection="false" selectedKey="1239102" items="{ path: '/Departments', sorter: { path: 'Name' } }">
+								<core:Item key="{ProductId}" text="{Name}"/>
+							</Select>
+						</Panel>
+					</l:SplitPane>
+					<l:SplitPane requiredParentWidth="800">
+						<Panel headerText="Kategorien">
+							
+						</Panel>
+							<!--<Page title="Kategorien">-->
+							<!--	<footer>-->
+							<!--		<OverflowToolbar id="otb3">-->
+							<!--			<Label text="Buttons:"/>-->
+							<!--			<ToolbarSpacer/>-->
+							<!--			<Button text="New" type="Transparent"/>-->
+							<!--			<Button text="Open" type="Transparent"/>-->
+							<!--			<Button text="Save" type="Transparent"/>-->
+							<!--			<Button text="Save as" type="Transparent"/>-->
+							<!--			<Button text="Cut" type="Transparent"/>-->
+							<!--			<Button text="Copy" type="Transparent"/>-->
+							<!--			<Button text="Paste" type="Transparent"/>-->
+							<!--			<Button text="Undo" type="Transparent"/>-->
+							<!--		</OverflowToolbar>-->
+							<!--	</footer>-->
+							<!--</Page>-->
+						</l:SplitPane>
+					<l:PaneContainer orientation="Vertical">
+						<l:SplitPane requiredParentWidth="2400" demandPane="true">
+						<VBox>
+							<fb:FilterBar reset="onReset" width="100%" search="onSearch" useToolbar="false" showGoOnFB="false">
+								<fb:filterItems>
+									<fb:FilterItem name="A" label="Name">
+										<fb:control>
+											<Select id="slName" forceSelection="true" change="onSelectChange">
+												<core:Item key="item1" text="Item1"/>
+												<core:Item key="item2" text="Item2"/>
+												<core:Item key="item3" text="Item3"/>
+											</Select>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="B" label="Category">
+										<fb:control>
+											<Select id="slCategory" change="onSelectChange" forceSelection="true" items="{ path: '/ProductCategories' }">
+												<core:Item key="{key}" text="{name}"/>
+											</Select>
+										</fb:control>
+									</fb:FilterItem>
+									<fb:FilterItem name="C" label="SupplierName">
+										<fb:control>
+											<Select id="slSupplierName" change="onSelectChange" forceSelection="true" items="{ path: '/ProductSuppliers' }">
+												<core:Item key="{key}" text="{name}"/>
+											</Select>
+										</fb:control>
+									</fb:FilterItem>
+								</fb:filterItems>
+							</fb:FilterBar>
+							<List items="{ path: '/Departments' }">
+								<ObjectListItem title="{Text}" counter="2"/>
+							</List>
+						</VBox>
+					</l:SplitPane>
+					</l:PaneContainer>
+				</l:PaneContainer>
+			</l:ResponsiveSplitter>
 		</content>
 		<footer>
 			<!--0..1-->

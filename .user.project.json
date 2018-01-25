@@ -15,7 +15,25 @@
         "runnerId": "webapprunner",
         "id": 8082516,
         "displayName": "Run index.html",
-        "lastRunTimeStamp": 1504099032033
+        "lastRunTimeStamp": 1516868218632
+      }
+    },
+    {
+      "filePath": "/webapp/index2.html",
+      "previewMode": 1,
+      "dataMode": 1,
+      "workspace": "withoutWorkspace",
+      "ui5ActiveVersion": null,
+      "ui5VerSource": null,
+      "isDefaultVersion": 0,
+      "urlParameters": [],
+      "hashParameter": "",
+      "backendSystem": [],
+      "_metadata": {
+        "runnerId": "webapprunner",
+        "id": 8893603,
+        "displayName": "Run index2.html",
+        "lastRunTimeStamp": 1516868199044
       }
     }
   ]
