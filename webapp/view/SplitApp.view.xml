@@ -4,8 +4,6 @@
 	displayBlock="true"
 	xmlns="sap.m">
 
-	<SplitApp id="splitApp"
-		 busy="{appView>/busy}"
-		 busyIndicatorDelay="{appView>/delay}"/>
+	<SplitApp id="splitApp"/>
 
 </mvc:View>

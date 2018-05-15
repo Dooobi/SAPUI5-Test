@@ -1,23 +1,27 @@
 sap.ui.define([
 	"my/namespace/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
-	"my/namespace/model/formatter"
-], function(BaseController, JSONModel, formatter) {
+	"my/namespace/model/formatter",
+	"my/namespace/helper/util",
+	"my/namespace/model/Constant"
+], function(BaseController, JSONModel, formatter, util, Constant) {
 	"use strict";
 
 	return BaseController.extend("my.namespace.controller.Master", {
 
 		formatter: formatter,
+		util: util,
 
 		/* =========================================================== */
 		/* lifecycle methods                                           */
 		/* =========================================================== */
 
 		/**
-		 * Called when the worklist controller is instantiated.
+		 * Called when the controller is instantiated.
 		 * @public
 		 */
 		onInit: function() {
+
 		}
 
 		/* =========================================================== */
@@ -29,6 +33,7 @@ sap.ui.define([
 		/* =========================================================== */
 		/* internal methods                                            */
 		/* =========================================================== */
+
 
 	});
 });

@@ -45,6 +45,15 @@ sap.ui.define([
 		},
 
 		/**
+		 * Convenience method for getting a control by id.
+		 * @public
+		 * @returns {sap.ui.core.Control} the control for this id
+		 */
+		byId: function(id) {
+			return this.getView().byId(id);
+		},
+
+		/**
 		 * Event handler for navigating back.
 		 * It there is a history entry we go one step back in the browser history
 		 * If not, it will replace the current entry of the browser history with the master route.

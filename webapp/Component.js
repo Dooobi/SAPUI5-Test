@@ -25,12 +25,6 @@ sap.ui.define([
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
 
-			// set the data model
-			this.setModel(models.createRowModel(), "rowModel");
-			
-			// set the table model
-			this.setModel(models.createColumnModel(), "columnModel");
-
 			// create the views based on the url/hash
 			this.getRouter().initialize();
 		},
@@ -67,7 +61,7 @@ sap.ui.define([
 			}
 			return this._sContentDensityClass;
 		},
-		
+
 		addIcons: function() {
 			IconPool.addIcon("approver", "fis", { fontFamily: "approver", content: "e94f" });
 		}
