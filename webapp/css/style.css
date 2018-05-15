@@ -4,3 +4,11 @@
     font-weight: normal;
     font-style: normal;
 }
+
+.withGrid .sapMListTblCell:not(:first-child):not(:nth-child(2)) {
+    border-left: 1px solid #e5e5e5;
+}
+
+.withBorder {
+    border: 2px solid #e5e5e5;
+}

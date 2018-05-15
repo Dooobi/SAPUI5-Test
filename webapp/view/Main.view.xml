@@ -1,5 +1,5 @@
 <mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns:table="sap.ui.table" xmlns:custom="my.namespace.customcontrol" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	xmlns:t="sap.ui.table" xmlns:custom="my.namespace.customcontrol" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
 	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
 		<customHeader>
 			<!--0..1-->
@@ -22,6 +22,34 @@
 			<!--0..n-->
 			<!--sap.ui.core.Control-->
 			<!--The content of this page -->
+			<Panel class="sapUiContentPadding">
+				<Table id="idProductsTable" inset="false" items="{/Persons}" class="withGrid withBorder">
+					<columns>
+						<Column width="12em">
+							<Text text="Spalte 1"/>
+						</Column>
+						<Column width="12em">
+							<Text text="Spalte 2"/>
+						</Column>
+						<Column width="12em">
+							<Text text="Spalte 3"/>
+						</Column>
+						<Column width="12em">
+							<Text text="Spalte 4"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<ObjectIdentifier title="{Firstname} {Lastname}" text="{PerId}"/>
+								<Text text="2"/>
+								<Text text="3"/>
+								<Text text="4"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</Panel>
 		</content>
 		<footer>
 			<!--0..1-->

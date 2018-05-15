@@ -12,7 +12,7 @@
 		},
 		"dataSources": {
 			"mainService": {
-				"uri": "/TraineeReportsService/odata.srv/",
+				"uri": "https://traineereportssrva203bb997.hana.ondemand.com/TraineeReportsService/odata.srv/",
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
