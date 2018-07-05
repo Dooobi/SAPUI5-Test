@@ -22,13 +22,18 @@ sap.ui.define([
 		 */
 		onInit: function() {
 
-		}
+		},
 
 		/* =========================================================== */
 		/* event handlers                                              */
 		/* =========================================================== */
 
-
+		navToSplitApp: function() {
+			var router = this.getRouter();
+			
+			router.navTo("master", {
+			});
+		}
 
 		/* =========================================================== */
 		/* internal methods                                            */

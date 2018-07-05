@@ -95,8 +95,6 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"viewPath": "my.namespace.view",
-				"controlId": "app",
-				"controlAggregation": "pages",
 				"async": true
 			},
 			"routes": [
@@ -108,12 +106,28 @@
 					]
 				},
 				{
-					"pattern": "split",
-					"name": "split",
-					"target": [
-						"master",
-						"detail"
-					]
+					"pattern": "splitApp",
+					"name": "splitApp",
+					"view": "SplitApp",
+					"targetControl": "app",
+					"targetAggregation": "pages",
+					"subroutes": [
+	                    {
+		                    "pattern": "master",
+		                    "name": "master",
+		                    "view": "Master",
+		                    "targetControl": "splitApp",
+		                    "targetAggregation": "masterPages",
+	                    	"subroutes": [
+			                    {
+				                    "pattern": "detail/{objectId}",
+				                    "name": "detail",
+				                    "view": "Detail",
+				                    "targetAggregation": "detailPages"
+			                    }
+		                    ]
+	                    }
+                    ]
 				}
 			],
 			"targets": {
@@ -121,29 +135,9 @@
 					"viewName": "Main",
 					"viewId": "main",
 					"viewLevel": 1,
-					"title": "{i18n>mainTitle}"
-				},
-				"test": {
-					"viewName": "Test",
-					"viewId": "test",
-					"viewLevel": 1,
-					"title": "{i18n>mainTitle}"
-				},
-				"master": {
-					"viewName": "Master",
-					"viewId": "master",
-					"viewLevel": 1,
-					"title": "{i18n>masterTitle}",
-					"controlId": "splitApp",
-					"controlAggregation": "masterPages"
-				},
-				"detail": {
-					"viewName": "Detail",
-					"viewId": "detail",
-					"viewLevel": 2,
-					"title": "{i18n>detailTitle}",
-					"controlId": "splitApp",
-					"controlAggregation": "detailPages"
+					"title": "{i18n>mainTitle}",
+					"controlId": "app",
+					"controlAggregation": "pages"
 				}
 			}
 		},

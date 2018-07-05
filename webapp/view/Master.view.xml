@@ -7,6 +7,9 @@
 			</Toolbar>
 		</semantic:subHeader>
 		<semantic:content>
+			<List id="masterList" mode="SingleSelectMaster" selectionChange="navToDetail">
+				<StandardListItem icon="sap-icon://action-settings" title="Test"/>
+			</List>
 		</semantic:content>
 	</semantic:MasterPage>
 </mvc:View>
