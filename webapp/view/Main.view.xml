@@ -1,37 +1,13 @@
 <mvc:View controllerName="my.namespace.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
 	xmlns:t="sap.ui.table" xmlns:custom="my.namespace.customcontrol" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<Page id="page" title="{i18n>mainTitle}" height="100%" enableScrolling="false">
-		<customHeader>
-			<!--0..1-->
-			<!--sap.m.IBar-->
-			<!--This will replace the page's header-->
-			<!--If used the properties 'title', 'icon', 'showNavButton' and 'navButtonText' will be ignored-->
-		</customHeader>
-		<headerContent>
-			<!--0..n-->
-			<!--sap.ui.core.Control-->
-			<!--Content which is added on the right side of the page header/title (usually buttons)-->
-			<!--Is ignored if a customHeader is used-->
-		</headerContent>
-		<subHeader>
-			<!--0..1-->
-			<!--sap.m.IBar-->
-			<!--Subheader directly under the header-->
-		</subHeader>
+	<Page id="page" title="{i18n>mainTitle}" enableScrolling="false">
 		<content>
-			<!--0..n-->
-			<!--sap.ui.core.Control-->
-			<!--The content of this page -->
+			<HBox>
+				<Button text="Load Model" press="_loadViewModel"/>
+				<Button text="Create RadioButtons" press="_createRadioButtons"/>
+				<Button text="Reset" press="_reset"/>
+			</HBox>
+			<HBox id="container"></HBox>
 		</content>
-		<footer>
-			<!--0..1-->
-			<!--sap.m.IBar-->
-			<!--Optional (dark) footer on the bottom of the page -->
-		</footer>
-		<landmarkInfo>
-			<!--0..1-->
-			<!--sap.m.PageAccessibleLandmarkInfo-->
-			<!--Used by assistive technologies like screenreaders-->
-		</landmarkInfo>
 	</Page>
 </mvc:View>

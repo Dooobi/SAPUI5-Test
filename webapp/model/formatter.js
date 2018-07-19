@@ -6,7 +6,10 @@ sap.ui.define([
 
 	return {
 
-
+		formatSelectedIndex: function(abc) {
+			console.log("formatter: " + abc);
+			return abc;
+		}
 
 	};
 });
